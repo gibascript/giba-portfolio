@@ -24,7 +24,6 @@ Personal portfolio of Gilberto. Single-page app, client-only, no backend.
 - **Package manager:** Bun (`bun.lock`). Do not use npm, pnpm or yarn.
 - **Language:** UI text is pt-BR. Code, comments, JSDoc and test descriptions
   are in English (see [Language](#language)).
-- `README.md` is still the Vite template; do not trust it as project docs.
 
 ## Development Commands
 
