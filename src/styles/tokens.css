@@ -1,0 +1,38 @@
+/*
+ * giba-ds raw palette (Back to Black theme + ayu accents). Components never
+ * read these directly: `theme.css` maps them to semantic Tailwind tokens.
+ */
+:root {
+  /* True black ground and its neutral steps. */
+  --black: #000000;
+  --gray-950: #0a0a0a;
+  --gray-925: #0d0d0d;
+  --gray-900: #111111;
+  --gray-850: #1a1a1a;
+  --gray-800: #222222;
+  --gray-750: #2b2a2a;
+  --gray-600: #444444;
+  --white: #ffffff;
+
+  /* Ink: contrast comes from white at fixed alphas, not from hue. */
+  --ink-100: #ffffff;
+  --ink-62: #ffffff9f;
+  --ink-44: #ffffff70;
+  --ink-23: #ffffff3b;
+  --ink-8: #ffffff15;
+  --line-44: #22222270;
+
+  /* Dimmed syntax hues. */
+  --syn-keyword: #ffc340a4;
+  --syn-function: #ff9040b2;
+  --syn-tag: #39bbe6b4;
+  --syn-string: #c4e88d93;
+  --syn-comment: #546e7a;
+
+  /* ayu accent and status hues. */
+  --ayu-accent: #e6b450;
+  --ayu-added: #70bf56;
+  --ayu-modified: #73b8ff;
+  --ayu-removed: #f26d78;
+  --ayu-error: #d95757;
+}

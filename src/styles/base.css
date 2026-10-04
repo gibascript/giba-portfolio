@@ -1,0 +1,73 @@
+/* giba-ds element defaults for the full-viewport workbench. */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  html,
+  body {
+    overflow: hidden;
+    background-color: --theme(--background-color-surface);
+  }
+
+  body {
+    color: --theme(--text-color-body);
+    font-family: --theme(--font-sans);
+    font-size: --theme(--text-lg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: --theme(--text-color-link);
+    transition: color 120ms --theme(--ease-out);
+  }
+
+  a:hover {
+    color: --theme(--text-color-strong);
+    text-decoration: underline;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: none;
+    border-radius: --theme(--radius-sm);
+    box-shadow: --theme(--shadow-focus);
+  }
+
+  ::selection {
+    background-color: var(--gray-800);
+    color: --theme(--text-color-strong);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: --theme(--radius-sm);
+    background: var(--gray-800);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-600);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}

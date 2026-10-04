@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Claude Design handoff bundle, kept locally as the implementation reference
+developer-portfolio-design/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

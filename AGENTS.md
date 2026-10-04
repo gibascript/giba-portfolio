@@ -20,24 +20,32 @@
 Personal portfolio of Gilberto. Single-page app, client-only, no backend.
 
 - **Stack:** Vite 8, React 19 with the React Compiler
-  (`babel-plugin-react-compiler`), TypeScript 6, ESLint 10 flat config.
+  (`babel-plugin-react-compiler`), TypeScript 6, ESLint 10 flat config,
+  Tailwind CSS 4 over the giba-ds tokens (see [Styling](#styling)), Vitest 5 +
+  Testing Library.
 - **Package manager:** Bun (`bun.lock`). Do not use npm, pnpm or yarn.
-- **Language:** UI text is pt-BR. Code, comments, JSDoc and test descriptions
-  are in English (see [Language](#language)).
+- **Language:** product text is bilingual, pt-BR (default) and English. Code,
+  comments, JSDoc and test descriptions are in English (see
+  [Language](#language)).
+- **Design:** the "Workbench" prototype from Claude Design (an editor-like
+  shell: hero, explorer, tabs, command palette, status bar). Architecture and
+  roadmap: [`docs/arquitetura.md`](docs/arquitetura.md).
 
 ## Development Commands
 
 ```bash
 bun install
-bun run dev       # vite dev server
-bun run build     # tsc -b && vite build (typechecks)
-bun run lint      # eslint .
-bun run preview   # serves dist/
+bun run dev          # vite dev server
+bun run build        # tsc -b && vite build (typechecks)
+bun run lint         # eslint .
+bun run test         # vitest run
+bun run test:watch   # vitest in watch mode
+bun run preview      # serves dist/
 ```
 
 ### Definition of done
 
-`bun run lint` and `bun run build` must both pass. When a test runner or a
+`bun run lint`, `bun run test` and `bun run build` must all pass. When a
 formatter is added, add it to this gate and to this section in the same change.
 
 ## Documentation (`docs/`)
@@ -55,14 +63,17 @@ When the project grows past what fits in this file, architecture docs go in
 
 ```
 src/
-  main.tsx                  # entry: mounts <App />
-  app.tsx                   # composes the page sections, nothing else
-  features/<feature>/       # one folder per page section (hero, about, projects, contact…)
+  main.tsx                  # entry: mounts <App />, imports the global styles
+  app.tsx                   # composes the providers and the features, nothing else
+  features/<feature>/       # one folder per screen part or workbench file (hero, about, contact…)
   components/               # shared UI used by 2+ features
-  hooks/                    # hooks with no feature (use-media-query, use-scroll-spy…)
+  context/<name>/           # app-wide state read by 2+ features (locale, workbench)
+  hooks/                    # hooks with no feature (use-media-query, use-hotkeys…)
   utils/<topic>/            # pure helpers shared by 2+ features
-  constants/                # app-wide constants (links, breakpoints)
-  assets/                   # images, svgs
+  constants/                # app-wide constants (links, breakpoints, workbench files)
+  styles/                   # global.css entry, fonts, raw palette, Tailwind theme, base
+  assets/                   # fonts, icons, the CV
+  test/                     # Vitest setup only
 ```
 
 A feature is self-contained and mirrors the same layout inside its folder:
@@ -73,8 +84,8 @@ features/projects/
   components/<group>/<component>/
   hooks/use-*/
   utils/<topic>/
-  constants/                # pt-BR text and data used by 2+ files of the feature
-  content/                  # static data (project list, experiences), typed
+  constants/                # product text and data used by 2+ files of the feature
+  content/                  # static data (projects, experiences), typed, per locale
   services/<op>/            # only if the feature calls an external API
 ```
 
@@ -101,9 +112,11 @@ Where each type is defined:
 
 Create a feature `context/` only when props would pass through more than 2
 levels, or when the same state is instantiated in two branches of the tree.
+State that 2+ features read goes to `src/context/<name>/`, with the same files
+and rules.
 
-- Files: `<feature>-context.ts`, `<feature>-provider.tsx` and
-  `use-<feature>-context.ts`, which throws outside the provider.
+- Files: `<name>-context.ts`, `<name>-provider.tsx` and
+  `use-<name>-context.ts`, which throws outside the provider.
 - The provider composes hooks and runs the feature effects.
 - **Only orchestrators read the context**; every other component gets props.
 - Read it through a parent variable, without destructuring:
@@ -124,15 +137,39 @@ If a feature calls an external API (e.g. GitHub), use one
 Keep the I/O in `api.ts` and the rules in `utils/`. Handle failures where the
 data is consumed: show a fallback, never a blank section.
 
+## Styling
+
+Tailwind CSS 4, configured in CSS. `src/styles/global.css` imports, in order:
+
+- `fonts.css`: Iosevka (woff2, Latin subset), the mono and display face;
+- `tokens.css`: the raw giba-ds palette (`--gray-*`, `--ink-*`, `--syn-*`);
+- `theme.css`: the semantic tokens as `@theme` variables;
+- `base.css`: element defaults (focus ring, links, scrollbars, reduced motion).
+
+Rules:
+
+- `theme.css` resets every default scale it replaces (`--color-*: initial`,
+  `--text-*: initial`…), so only giba-ds tokens exist: `bg-red-500` or
+  `text-base` do not compile to anything.
+- Colors are split by role: `bg-surface-*`, `text-strong|body|muted|faint`,
+  `text-syn-*`, `border-subtle|default|strong`.
+- **No arbitrary values** (`w-[13px]`, `text-[#fff]`). A missing value becomes a
+  token in `theme.css` first. A token with a custom name also goes into the
+  `extendTailwindMerge` config of `src/utils/cn/cn.ts`, or `cn` will drop it
+  when merging.
+- Merge classes with `cn` (`@/utils/cn`), never with string concatenation.
+
 ## Code Conventions
 
 ### Naming & imports
 
 - Files and folders are kebab-case; components PascalCase; hooks `useX`.
 - Each `use-*` hook lives in its own folder (`use-x/use-x.ts` + `index.ts`).
-- Omit `.ts`/`.tsx` extensions in imports.
+- Omit `.ts`/`.tsx` extensions in imports. Import across folders with the `@/`
+  alias (`@/utils/cn`); use `./` only inside the same component or hook folder.
 - Import by **deep path**; barrels exist only as a component's or a hook's own
   `index.ts`. Groups and features have no root barrel.
+- Single quotes, semicolons, trailing commas, 2-space indent.
 - No `console.*` left in committed code.
 
 ### Components
@@ -140,7 +177,7 @@ data is consumed: show a fallback, never a blank section.
 - One folder per component, in kebab-case: `<name>/` with:
   - `<name>.tsx`;
   - `index.ts`, containing only `export * from './<name>';`;
-  - `<name>.test.tsx`, once a test runner exists.
+  - `<name>.test.tsx`.
 - Feature components live in `components/<group>/<component>/`, two levels at
   most, never loose at the root of `components/`.
 - **Compound parts:** one root plus named, exported subparts
@@ -177,12 +214,20 @@ data is consumed: show a fallback, never a blank section.
 
 ### `utils/<topic>/` and `constants/`
 
-- `utils/<topic>/` holds pure rules and types in four files: `<topic>.ts`,
-  `<topic>.types.ts`, `<topic>.test.ts` and `index.ts`.
+- `utils/<topic>/` holds pure rules and types in up to four files:
+  `<topic>.ts`, `<topic>.types.ts` (only when the topic defines types),
+  `<topic>.test.ts` and `index.ts`.
 - **Pitfall:** a file and a folder with the same name under `utils/` make Vite
   resolve the file, and `tsc` does not catch it.
-- `constants/` holds pt-BR text used by more than one file, durations and
+- `constants/` holds product text used by more than one file, durations and
   breakpoints.
+
+### Locale
+
+- Every product string exists in pt-BR and English. Content is typed once and
+  stored as `Record<Locale, T>`, so a missing translation fails `tsc`.
+- pt-BR is the default; the chosen locale persists in `localStorage` and sets
+  `<html lang>`.
 
 ### Complexity limits
 
@@ -198,9 +243,9 @@ data is consumed: show a fallback, never a blank section.
 ### Language
 
 Code, comments, JSDoc and test descriptions (`describe`/`it`) are in
-**English**. pt-BR is kept only for product text: UI strings, labels, `alt`
-texts and the mocks that reproduce them. When a test description quotes a
-screen label, the label stays in pt-BR, in quotes, e.g.
+**English**. pt-BR and English are kept only for product text: UI strings,
+labels, `alt` texts and the mocks that reproduce them. When a test description
+quotes a screen label, the label stays in the tested locale, in quotes, e.g.
 `it('opens the repository when "Ver código" is clicked')`. Docs in `docs/` are
 pt-BR.
 
@@ -224,19 +269,22 @@ pt-BR.
 
 ## Testing
 
-There is no test runner yet. When one is added (Vitest + Testing Library is the
-default choice for Vite):
+Vitest 5 with jsdom and Testing Library (`src/test/setup.ts` adds the jest-dom
+matchers and cleans the DOM after each test).
 
-- tests sit next to their source as `*.test.ts(x)`;
-- pure `utils/` get unit tests first; components are tested through what the
-  user sees (roles, labels), not implementation details;
-- add the test command to the [definition of done](#definition-of-done).
+- Tests sit next to their source as `*.test.ts(x)`.
+- Pure `utils/` get unit tests first; components are tested through what the
+  user sees (roles, labels), not implementation details.
+- Import `describe`, `it` and `expect` from `vitest`; there are no globals.
 
 ## Important Files
 
 | File                                    | Why                                                |
 | --------------------------------------- | -------------------------------------------------- |
-| `vite.config.ts`                        | React plugin + React Compiler via Babel preset     |
+| `vite.config.ts`                        | React + React Compiler, Tailwind, `@/` alias, Vitest |
+| `src/styles/theme.css`                  | giba-ds tokens as the Tailwind theme               |
+| `src/utils/cn/cn.ts`                    | Class merging, aware of the custom token names     |
 | `eslint.config.js`                      | ESLint flat config (TS, react-hooks, react-refresh) |
-| `tsconfig.app.json`                     | Strict-ish app TS config (`noUnused*`, bundler)    |
+| `tsconfig.app.json`                     | Strict-ish app TS config (`noUnused*`, bundler, `@/*`) |
+| `docs/arquitetura.md`                   | Architecture, design tokens, implementation roadmap |
 | `CLAUDE.md`                             | Points to this file; edit `AGENTS.md`, not it      |

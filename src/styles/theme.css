@@ -1,0 +1,148 @@
+/*
+ * Semantic design tokens of giba-ds as Tailwind theme variables. Each default
+ * scale that the design system replaces is reset first, so a utility outside
+ * these tokens (e.g. `bg-red-500`) does not exist.
+ *
+ * Colors live in per-utility namespaces to read as roles: `bg-surface-hover`,
+ * `text-muted`, `border-subtle`, `text-syn-keyword`.
+ */
+@theme {
+  --color-*: initial;
+
+  --background-color-surface: var(--black);
+  --background-color-surface-raised: var(--gray-950);
+  --background-color-surface-active: var(--gray-925);
+  --background-color-surface-hover: var(--gray-900);
+  --background-color-surface-selected: var(--gray-850);
+  --background-color-surface-control: var(--gray-800);
+  --background-color-guide: var(--ink-8);
+  --background-color-accent: var(--ayu-accent);
+  --background-color-success: var(--ayu-added);
+  --background-color-scrim: rgb(0 0 0 / 0.6);
+
+  --text-color-strong: var(--ink-100);
+  --text-color-body: var(--ink-62);
+  --text-color-muted: var(--ink-44);
+  --text-color-faint: var(--ink-23);
+  --text-color-ghost: var(--ink-8);
+  --text-color-accent: var(--ayu-accent);
+  --text-color-on-accent: var(--black);
+  --text-color-success: var(--ayu-added);
+  --text-color-link: var(--syn-tag);
+  --text-color-syn-comment: var(--syn-comment);
+  --text-color-syn-keyword: var(--syn-keyword);
+  --text-color-syn-function: var(--syn-function);
+  --text-color-syn-tag: var(--syn-tag);
+  --text-color-syn-string: var(--syn-string);
+
+  --border-color-subtle: var(--line-44);
+  --border-color-default: var(--gray-800);
+  --border-color-strong: var(--gray-600);
+  --border-color-surface-active: var(--gray-925);
+  --outline-color-strong: var(--gray-600);
+
+  --font-*: initial;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Iosevka', ui-monospace, 'JetBrains Mono', Menlo, Monaco, monospace;
+  --font-display: var(--font-mono);
+
+  /* UI scale (ayu designer) plus the two prose sizes of the portfolio. */
+  --text-*: initial;
+  --text-xs: 10px;
+  --text-sm: 11px;
+  --text-md: 12px;
+  --text-lg: 13px;
+  --text-prose: 14px;
+  --text-prose-lg: 15px;
+  --text-xl: 18px;
+
+  /* Display scale: Iosevka SemiBold headlines with tight tracking. */
+  --text-numeral: 56px;
+  --text-numeral--line-height: 1;
+  --text-numeral--letter-spacing: -0.04em;
+  --text-display-xs: clamp(18px, 2vw, 24px);
+  --text-display-xs--line-height: 1.25;
+  --text-display-xs--letter-spacing: -0.01em;
+  --text-display-sm: clamp(20px, 3vw, 36px);
+  --text-display-sm--letter-spacing: -0.02em;
+  --text-display-md: clamp(32px, 4.2vw, 56px);
+  --text-display-md--line-height: 1.05;
+  --text-display-md--letter-spacing: -0.03em;
+  --text-display-lg: clamp(40px, 6vw, 80px);
+  --text-display-lg--line-height: 0.95;
+  --text-display-lg--letter-spacing: -0.04em;
+  --text-display-xl: clamp(48px, 8vw, 120px);
+  --text-display-xl--line-height: 0.92;
+  --text-display-xl--letter-spacing: -0.045em;
+  --text-display-hero: clamp(64px, 12.5vw, 196px);
+  --text-display-hero--line-height: 0.88;
+  --text-display-hero--letter-spacing: -0.045em;
+
+  --leading-*: initial;
+  --leading-code: 20px;
+  --leading-none: 1;
+  --leading-tight: 1.2;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.6;
+  --leading-loose: 1.65;
+
+  --tracking-caps: 0.05em;
+
+  /* 4px base; chrome sizes of the editor workbench. */
+  --spacing: 4px;
+  --spacing-status-bar: 24px;
+  --spacing-tab-bar: 36px;
+  --spacing-title-bar: 38px;
+  --spacing-gutter: 64px;
+  --spacing-sidebar: 260px;
+
+  /* Text measures and fixed widths. */
+  --container-*: initial;
+  --container-lead: 18ch;
+  --container-headline: 62ch;
+  --container-paragraph: 64ch;
+  --container-summary: 68ch;
+  --container-bullet: 72ch;
+  --container-empty: 320px;
+  --container-palette: 600px;
+  --container-editor: 980px;
+
+  /* Below `md` the workbench explorer becomes a drawer. */
+  --breakpoint-*: initial;
+  --breakpoint-md: 860px;
+
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  /* Borders do the work on true black; shadows only lift overlays. */
+  --shadow-*: initial;
+  --shadow-popup: 0 8px 24px rgb(0 0 0 / 0.5);
+  --shadow-lift: 0 -24px 48px rgb(0 0 0 / 0.6);
+  --shadow-focus: 0 0 0 2px var(--ayu-accent);
+
+  /* Motion: short and ease-out; fades only. */
+  --ease-out: cubic-bezier(0, 0, 0.58, 1);
+  --animate-reveal: reveal 200ms var(--ease-out);
+  --animate-reveal-fast: reveal 120ms var(--ease-out);
+  --animate-blink: blink 1s steps(1) infinite;
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+}
