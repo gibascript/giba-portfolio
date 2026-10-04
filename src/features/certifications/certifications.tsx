@@ -1,21 +1,24 @@
-import { Code, CodeToken } from '@/components/code';
-import { Section, SectionTitle } from '@/components/section';
-import { workbenchFiles } from '@/constants/workbench-files';
-import { useLocaleContext } from '@/context/locale/use-locale-context';
-import { certificationsContent } from '@/features/certifications/content/certifications';
+import { Code, CodeToken } from "@/components/code";
+import { Section, SectionTitle } from "@/components/section";
+import { workbenchFiles } from "@/constants/workbench-files";
+import { useLocaleContext } from "@/context/locale/use-locale-context";
+import { certificationsContent } from "@/features/certifications/content/certifications";
 
 /**
- * The certifications file (`certificacoes.json`), dressed as a JSON array:
- * one `"name"` per row, with its `"issuer"` when known.
+ * The certifications file (`certificacoes.json`), dressed as a JSON array
+ * under a `//` comment with the file name: one `"name"` per row, with its
+ * `"issuer"` when known.
  */
 export default function Certifications() {
   const locale = useLocaleContext();
+  const file = workbenchFiles.certifications;
 
   return (
     <Section>
-      <SectionTitle className="mt-0 mb-10">
-        {workbenchFiles.certifications.title[locale.locale]}
-      </SectionTitle>
+      <Code aria-hidden>
+        <CodeToken kind="comment">// {file.name[locale.locale]}</CodeToken>
+      </Code>
+      <SectionTitle className="mb-10">{file.title[locale.locale]}</SectionTitle>
       <Code aria-hidden className="text-muted">
         [
       </Code>
@@ -37,7 +40,7 @@ export default function Certifications() {
             </span>
             {certification.issuer && (
               <Code as="span">
-                <CodeToken kind="property">"issuer":</CodeToken>{' '}
+                <CodeToken kind="property">"issuer":</CodeToken>{" "}
                 <CodeToken kind="string">"{certification.issuer}"</CodeToken>
               </Code>
             )}

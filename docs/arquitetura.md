@@ -215,7 +215,7 @@ título; as linhas de código decorativas (`export const experience = [`) são
 | `about` | `sobre.md` | frase de abertura como título, parágrafos e fatos em `dl` |
 | `experience` | `experiencia.ts` | `Timeline` de empregos, com selo "Atual" no atual |
 | `projects` | `projetos.tsx` | grade `grid-cols-cards` de `ProjectCard` numerados |
-| `certifications` | `certificacoes.json` | lista `"name"`/`"issuer"`; nomes iguais nos dois idiomas |
+| `certifications` | `certificacoes.json` | comentário `// certificacoes.json` (ausente no protótipo) e lista `"name"`/`"issuer"`; nomes iguais nos dois idiomas |
 | `stack` | `stack.yaml` | grade `grid-cols-stack` de grupos (`h3`) e itens |
 | `education` | `formacao.md` | `Timeline` de cursos |
 | `testimonials` | `depoimentos.md` | citação (`figure`/`blockquote`); **conteúdo mock** em `content/testimonials.ts`, a substituir pelas recomendações reais |
