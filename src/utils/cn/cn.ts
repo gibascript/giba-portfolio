@@ -36,6 +36,9 @@ const twMerge = extendTailwindMerge({
       ],
       tracking: ['caps', 'display'],
     },
+    classGroups: {
+      'grid-cols': [{ 'grid-cols': ['cards', 'stack'] }],
+    },
   },
 });
 

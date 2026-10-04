@@ -151,7 +151,26 @@ estado de hover em JavaScript).
 
 `Button`, `ListItem`, `Code` e `Overline` são polimórficos (`as`), tipados por
 `GenericTag` (`src/utils/generic-tag`). O `EmptyState` do giba-ds ficou de
-fora: o único uso no protótipo era em depoimentos, que terá um depoimento mock.
+fora: o único uso no protótipo era em depoimentos, que agora tem um depoimento mock.
+
+## Seções
+
+Cada arquivo do workbench é uma feature com `content/` tipado por idioma,
+tipos em `utils/<tema>/<tema>.types.ts` e o visual de "código" do protótipo.
+Todas usam `Section` + `SectionTitle`, então cada uma é uma região nomeada pelo
+título; as linhas de código decorativas (`export const experience = [`) são
+`aria-hidden`.
+
+| Feature | Arquivo | Forma |
+| --- | --- | --- |
+| `about` | `sobre.md` | frase de abertura como título, parágrafos e fatos em `dl` |
+| `experience` | `experiencia.ts` | `Timeline` de empregos, com selo "Atual" no atual |
+| `projects` | `projetos.tsx` | grade `grid-cols-cards` de `ProjectCard` numerados |
+| `certifications` | `certificacoes.json` | lista `"name"`/`"issuer"`; nomes iguais nos dois idiomas |
+| `stack` | `stack.yaml` | grade `grid-cols-stack` de grupos (`h3`) e itens |
+| `education` | `formacao.md` | `Timeline` de cursos |
+| `testimonials` | `depoimentos.md` | citação (`figure`/`blockquote`); **conteúdo mock** em `content/testimonials.ts`, a substituir pelas recomendações reais |
+| `contact` | `contato.sh` | `ContactRow`s: `$ mail` copia o e-mail, `$ open` abre LinkedIn/GitHub em nova aba, `$ curl -O` baixa o CV |
 
 ## Idiomas
 
@@ -183,7 +202,7 @@ foco; ao trocar de estágio, o foco vai para o estágio visível.
 | 2 | Componentes globais: `Button`, `Kbd`, `FileIcon`, `ListItem`, `Tabs`, `StatusBar`, `Code`, `Section`, `Timeline` | concluída |
 | 3 | Infraestrutura: contexto de idioma, tipos de conteúdo, `constants/`, hooks globais | concluída |
 | 4 | Shell do workbench: navegação, barra de título, explorer, abas, trilha, numeração de linhas, paginação, barra de status | concluída |
-| 5 | Seções (depoimentos com um mock por enquanto) e composição no `app.tsx` | pendente |
+| 5 | Seções (depoimentos com um mock por enquanto) e composição no `app.tsx` | concluída |
 | 6 | Hero e transição por rolagem (o logo e o arquivo da barra de status passam a voltar ao hero) | pendente |
 | 7 | Paleta de comandos | pendente |
 | 8 | Atalhos globais, hash da URL e acabamento (a11y, SEO, Lighthouse) | pendente |

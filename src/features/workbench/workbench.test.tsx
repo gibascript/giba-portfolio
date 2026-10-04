@@ -1,14 +1,12 @@
-import { render, screen, within } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { PropsWithChildren } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   workbenchFileIds,
   workbenchFiles,
   type WorkbenchFileId,
 } from '@/constants/workbench-files';
-import { LocaleProvider } from '@/context/locale/locale-provider';
-import { WorkbenchProvider } from '@/context/workbench/workbench-provider';
+import { renderWithProviders } from '@/test/render-with-providers';
 import Workbench from './workbench';
 
 const files = Object.fromEntries(
@@ -17,14 +15,6 @@ const files = Object.fromEntries(
     () => <h2>{workbenchFiles[id].title.pt}</h2>,
   ]),
 ) as Record<WorkbenchFileId, () => React.JSX.Element>;
-
-function Providers({ children }: PropsWithChildren) {
-  return (
-    <LocaleProvider>
-      <WorkbenchProvider>{children}</WorkbenchProvider>
-    </LocaleProvider>
-  );
-}
 
 function openTabs() {
   return within(screen.getByRole('group', { name: 'Arquivos abertos' }))
@@ -48,7 +38,7 @@ describe('Workbench', () => {
   });
 
   it('opens a file from the explorer in a new tab', async () => {
-    render(<Workbench files={files} />, { wrapper: Providers });
+    renderWithProviders(<Workbench files={files} />);
 
     const explorer = screen.getByRole('navigation', { name: 'Explorer' });
     await userEvent.click(
@@ -65,7 +55,7 @@ describe('Workbench', () => {
   });
 
   it('goes back to the previous tab when the open one is closed', async () => {
-    render(<Workbench files={files} />, { wrapper: Providers });
+    renderWithProviders(<Workbench files={files} />);
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Próximo arquivo: experiencia.ts' }),

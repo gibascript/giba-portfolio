@@ -1,10 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { PropsWithChildren } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { LocaleProvider } from '@/context/locale/locale-provider';
+import { describe, expect, it } from 'vitest';
 import { useWorkbenchContext } from '@/context/workbench/use-workbench-context';
-import { WorkbenchProvider } from '@/context/workbench/workbench-provider';
+import { renderWithProviders } from '@/test/render-with-providers';
 import AppStatus from './app-status';
 
 function CopyEmailButton() {
@@ -20,25 +18,9 @@ function CopyEmailButton() {
   );
 }
 
-function Providers({ children }: PropsWithChildren) {
-  return (
-    <LocaleProvider>
-      <WorkbenchProvider>
-        <CopyEmailButton />
-        {children}
-      </WorkbenchProvider>
-    </LocaleProvider>
-  );
-}
-
 describe('AppStatus', () => {
-  afterEach(() => {
-    localStorage.clear();
-    vi.unstubAllGlobals();
-  });
-
   it('switches the language of the page', async () => {
-    render(<AppStatus />, { wrapper: Providers });
+    renderWithProviders(<AppStatus />);
 
     expect(screen.getByRole('contentinfo')).toHaveTextContent('sobre.md');
 
@@ -55,7 +37,12 @@ describe('AppStatus', () => {
 
   it('announces a copied e-mail wherever the copy happened', async () => {
     const user = userEvent.setup();
-    render(<AppStatus />, { wrapper: Providers });
+    renderWithProviders(
+      <>
+        <CopyEmailButton />
+        <AppStatus />
+      </>,
+    );
 
     expect(screen.getByRole('status')).toHaveTextContent('Pronto');
 
@@ -64,7 +51,6 @@ describe('AppStatus', () => {
     await expect(navigator.clipboard.readText()).resolves.toBe(
       'alvesgilberto84@gmail.com',
     );
-
     expect(screen.getByRole('status')).toHaveTextContent('✓ E-mail copiado');
   });
 });

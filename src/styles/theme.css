@@ -100,6 +100,16 @@
   --spacing-gutter: 64px;
   --spacing-sidebar: 260px;
 
+  /* Responsive card grids: as many columns as fit, each at least this wide. */
+  --grid-template-columns-cards: repeat(
+    auto-fill,
+    minmax(min(100%, 340px), 1fr)
+  );
+  --grid-template-columns-stack: repeat(
+    auto-fill,
+    minmax(min(100%, 240px), 1fr)
+  );
+
   /* Text measures and fixed widths. */
   --container-*: initial;
   --container-lead: 18ch;

@@ -73,7 +73,7 @@ src/
   constants/                # app-wide constants (links, breakpoints, workbench files)
   styles/                   # global.css entry, fonts, raw palette, Tailwind theme, base
   assets/                   # fonts, icons, the CV
-  test/                     # Vitest setup and shared test doubles (mockMatchMedia)
+  test/                     # Vitest setup, test doubles (mockMatchMedia) and renderWithProviders
 ```
 
 A feature is self-contained and mirrors the same layout inside its folder:
@@ -283,6 +283,9 @@ matchers and cleans the DOM after each test).
 - Pure `utils/` get unit tests first; components are tested through what the
   user sees (roles, labels), not implementation details.
 - Import `describe`, `it` and `expect` from `vitest`; there are no globals.
+- Render a feature that reads the app contexts with `renderWithProviders`
+  (`@/test/render-with-providers`), choosing the `locale`. The setup clears
+  `localStorage` after each test.
 
 ## Important Files
 
