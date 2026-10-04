@@ -83,6 +83,28 @@ Princípios do giba-ds aplicados no tema:
 As escalas padrão do Tailwind substituídas são zeradas, então classes fora do
 design system (`bg-red-500`, `text-base`) não geram CSS.
 
+## Componentes globais
+
+Ficam em `src/components/`, um por pasta, todos com teste. Os do giba-ds foram
+reescritos com Tailwind e HTML semântico (o protótipo usava `div` clicável e
+estado de hover em JavaScript).
+
+| Componente | Partes | Uso |
+| --- | --- | --- |
+| `Button` | — | `primary`, `secondary`, `ghost`; `md`, `sm`; `as="a"` para links |
+| `Kbd` | — | teclas: `⌘`, `K`, `esc`, `[`, `]` |
+| `FileIcon` | — | ícones de tipo de arquivo (`markdown`, `typescript`, `react`, `json`, `yaml`, `shell`, `folder-open`), decorativos |
+| `ListItem` | — | linhas do explorer: `icon`, `nested`, `chevron`; selecionada via `aria-current="page"` |
+| `Tabs` | `Tab`, `TabTrigger`, `TabClose` | abas de arquivos abertos (`icon` no `TabTrigger`); fechar e selecionar são botões separados |
+| `StatusBar` | `StatusBarGroup`, `StatusBarItem`, `StatusBarButton` | rodapé (`contentinfo`) com textos e ações |
+| `Code` | `CodeToken` | linhas de código em Iosevka; `CodeToken` colore por `kind` (`comment`, `keyword`, `function`, `property`, `string`, `punctuation`) |
+| `Section` | `SectionTitle` | cada arquivo do portfólio; a seção é rotulada pelo título automaticamente |
+| `Timeline` | `TimelineItem`, `TimelinePeriod`, `TimelineBody`, `TimelineTitle` | experiência e formação |
+
+`Button`, `ListItem` e `Code` são polimórficos (`as`), tipados por
+`GenericTag` (`src/utils/generic-tag`). O `EmptyState` do giba-ds ficou de
+fora: o único uso no protótipo era em depoimentos, que terá um depoimento mock.
+
 ## Idiomas
 
 Todo texto de produto existe em pt-BR (padrão) e inglês. O conteúdo de cada
@@ -110,7 +132,7 @@ foco; ao trocar de estágio, o foco vai para o estágio visível.
 | # | Etapa | Status |
 | --- | --- | --- |
 | 1 | Fundação: Tailwind + tokens, fontes, `cn`, alias `@/`, Vitest | concluída |
-| 2 | Componentes globais: `Button`, `Kbd`, `ListItem`, `Tabs`, `StatusBar`, `EmptyState`, `FileIcon`, cabeçalho de seção, linha do tempo | pendente |
+| 2 | Componentes globais: `Button`, `Kbd`, `FileIcon`, `ListItem`, `Tabs`, `StatusBar`, `Code`, `Section`, `Timeline` | concluída |
 | 3 | Infraestrutura: contexto de idioma, tipos de conteúdo, `constants/`, hooks globais | pendente |
 | 4 | Shell do workbench: navegação, barra de título, explorer, abas, trilha, numeração de linhas, paginação, barra de status | pendente |
 | 5 | Hero e transição por rolagem | pendente |

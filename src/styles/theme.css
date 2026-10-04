@@ -125,6 +125,8 @@
 
   /* Motion: short and ease-out; fades only. */
   --ease-out: cubic-bezier(0, 0, 0.58, 1);
+  --default-transition-duration: 120ms;
+  --default-transition-timing-function: var(--ease-out);
   --animate-reveal: reveal 200ms var(--ease-out);
   --animate-reveal-fast: reveal 120ms var(--ease-out);
   --animate-blink: blink 1s steps(1) infinite;

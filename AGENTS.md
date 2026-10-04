@@ -184,6 +184,13 @@ Rules:
   (`Card`/`CardHeader`/`CardTitle`). Each part is its own function.
 - Each part forwards native props through `ComponentProps<'tag'>` and merges
   `className` instead of overriding it.
+- A component that may render another tag takes `as`, typed with
+  `GenericTag<T>` (`@/utils/generic-tag`), e.g. `<Button as="a" href…>`.
+- Variant and size class maps live in a sibling `<name>-variants.ts`, never
+  loose in the `.tsx`.
+- Style state from the semantic attribute that carries it
+  (`aria-[current=page]:`, `data-active:`, `disabled:`), not from a parallel
+  boolean class switch, when the attribute already exists.
 - Icons are passed as a prop (`icon={GithubIcon}`), not as `children`.
 - Use design tokens (CSS variables or the styling system's theme), never
   hardcoded colors or spacing scattered in components.
