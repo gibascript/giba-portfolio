@@ -8,6 +8,7 @@ type UiText = {
   downloadCv: string;
   copyEmail: string;
   emailCopied: string;
+  newTab: string;
 };
 
 /** Interface labels shared by two or more features. */
@@ -20,6 +21,7 @@ export const uiText: Localized<UiText> = {
     downloadCv: 'Baixar currículo',
     copyEmail: 'Copiar e-mail',
     emailCopied: 'E-mail copiado',
+    newTab: '(abre em nova aba)',
   },
   en: {
     explorer: 'Explorer',
@@ -29,5 +31,6 @@ export const uiText: Localized<UiText> = {
     downloadCv: 'Download CV',
     copyEmail: 'Copy email',
     emailCopied: 'Email copied',
+    newTab: '(opens in a new tab)',
   },
 };

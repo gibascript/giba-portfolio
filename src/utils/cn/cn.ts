@@ -34,7 +34,7 @@ const twMerge = extendTailwindMerge({
         'display-xl',
         'display-hero',
       ],
-      tracking: ['caps'],
+      tracking: ['caps', 'display'],
     },
   },
 });

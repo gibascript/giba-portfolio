@@ -13,17 +13,47 @@ de comandos e barra de status. Cada seção do portfólio é um "arquivo".
 ```mermaid
 flowchart TD
   App["app.tsx"] --> Locale["LocaleProvider (pt-BR | en)"]
-  Locale --> Workbench["WorkbenchProvider (arquivo ativo, abas, estágio, paleta)"]
+  Locale --> Workbench["WorkbenchProvider (arquivo ativo, abas, clipboard)"]
   Workbench --> Hero["features/hero"]
   Workbench --> Shell["features/workbench (barra de título, explorer, abas, editor)"]
   Workbench --> Palette["features/command-palette"]
-  Workbench --> Status["features/status-bar"]
+  Workbench --> Status["features/app-status (barra de status)"]
   Shell --> Files["about · experience · projects · certifications · stack · education · testimonials · contact"]
 ```
 
-_Planejado._ O workbench não importa as features das seções: o `app.tsx` passa
-o mapa `{ about: About, … }` para ele, mantendo a regra de que uma feature nunca
-importa outra.
+O workbench não importa as features das seções: recebe do `app.tsx` a prop
+`files`, um `Record<WorkbenchFileId, ComponentType>`, mantendo a regra de que
+uma feature nunca importa outra. O tipo exige as 8 seções.
+
+### Workbench (`features/workbench`)
+
+```
+┌ header: ☰ (só < md) · gilberto-alves. · arquivo — portfolio · Baixar currículo ┐
+├ nav explorer (260px) ┬ abas (Arquivos abertos) ─────────────────────────────┤
+│ PORTFOLIO            │ portfolio › arquivo                                 │
+│   arquivos…          ├ main ──────────────────────────────────────────────┤
+│ LINKS                │ 1  │ seção do arquivo ativo (até 980px)            │
+│   GitHub ↗           │ 2  │ …                                             │
+│   LinkedIn ↗         │ …  │ [ ← anterior            próximo → ]           │
+│   Baixar currículo ↓ │    │                                               │
+└──────────────────────┴────┴───────────────────────────────────────────────┘
+```
+
+- Abaixo de `md` (860px) o explorer vira gaveta sobre o editor, aberta pelo ☰
+  (`aria-expanded`/`aria-controls`). Abrir qualquer arquivo fecha a gaveta.
+- O editor é remontado por arquivo (`key`), então cada arquivo abre no topo e
+  com o fade de entrada.
+- A numeração de linhas acompanha a altura do conteúdo (`ResizeObserver`, uma
+  linha a cada 20px, no mínimo 40) e é `aria-hidden`.
+- Fechar a aba ativa ativa a última aba restante; fechar a última reabre
+  `sobre.md`.
+
+### Barra de status (`features/app-status`)
+
+Esquerda: arquivo ativo e um `role="status"` com "Pronto" ou "✓ E-mail
+copiado" (o feedback do clipboard do contexto, venha a cópia de onde vier).
+Direita: "Brasil ·" (só a partir de `md`), a hora de Brasília (`HH:mm:ss`,
+atualizada a cada segundo) e o botão `PT-BR | EN`.
 
 ### Estágios
 
@@ -42,7 +72,8 @@ A transição acompanha a rolagem (roda do mouse e toque): o progresso vai de 0 
 | Contexto (`src/context/`) | Responsabilidade | Status |
 | --- | --- | --- |
 | `locale/` | idioma ativo (`pt` padrão, `en`), persistência em `localStorage` (`gb-portfolio-lang`), `<html lang>`, `toggleLocale` | implementado |
-| `workbench/` | arquivo ativo, abas abertas, estágio, paleta aberta, feedback de cópia | planejado |
+| `workbench/` | arquivo ativo e abas (`openFile`, `closeTab`, `stepFile`), clipboard compartilhado | implementado |
+| `workbench/` (próximas etapas) | estágio hero ↔ workbench, paleta aberta | planejado |
 
 O arquivo ativo é sincronizado com o hash da URL pelo `id` do arquivo, que não
 muda com o idioma (`#/projects`, `#/contact`), permitindo link direto e o botão
@@ -52,7 +83,7 @@ voltar do navegador.
 
 | Onde | O quê |
 | --- | --- |
-| `constants/workbench-files.ts` | os 8 arquivos, em ordem: `id`, ícone, nome e título por idioma |
+| `constants/workbench-files.ts` | os 8 arquivos por `id` (ícone, nome e título por idioma) e a ordem deles (`workbenchFileIds`) |
 | `constants/links.ts` | e-mail, GitHub, LinkedIn e o CV (`src/assets/gilberto-alves-cv.pdf`) |
 | `constants/ui-text.ts` | rótulos usados por 2+ features (Explorer, Seções, Links, Comandos, Baixar currículo, Copiar e-mail, E-mail copiado) |
 | `constants/storage-keys.ts`, `media-queries.ts`, `durations.ts` | chaves de `localStorage`, consultas de mídia (`wide` = 860px, reduced motion), duração do feedback de cópia |
@@ -61,6 +92,7 @@ voltar do navegador.
 | `hooks/use-clipboard` | copia e marca `copied` por 2,2 s; cópia recusada não é anunciada |
 | `utils/locale` | `Locale`, `Localized<T>`, `isLocale`, `htmlLangs` |
 | `utils/cyclic-step` | passo circular para arquivo anterior/próximo |
+| `utils/open-files` | regras puras de abrir arquivo e fechar aba |
 
 ## Design tokens
 
@@ -115,8 +147,9 @@ estado de hover em JavaScript).
 | `Code` | `CodeToken` | linhas de código em Iosevka; `CodeToken` colore por `kind` (`comment`, `keyword`, `function`, `property`, `string`, `punctuation`) |
 | `Section` | `SectionTitle` | cada arquivo do portfólio; a seção é rotulada pelo título automaticamente |
 | `Timeline` | `TimelineItem`, `TimelinePeriod`, `TimelineBody`, `TimelineTitle` | experiência e formação |
+| `Overline` | — | rótulo de painel em caixa alta, 10px ("EXPLORER", "LINKS"); polimórfico (`as="h2"`) |
 
-`Button`, `ListItem` e `Code` são polimórficos (`as`), tipados por
+`Button`, `ListItem`, `Code` e `Overline` são polimórficos (`as`), tipados por
 `GenericTag` (`src/utils/generic-tag`). O `EmptyState` do giba-ds ficou de
 fora: o único uso no protótipo era em depoimentos, que terá um depoimento mock.
 
@@ -149,9 +182,9 @@ foco; ao trocar de estágio, o foco vai para o estágio visível.
 | 1 | Fundação: Tailwind + tokens, fontes, `cn`, alias `@/`, Vitest | concluída |
 | 2 | Componentes globais: `Button`, `Kbd`, `FileIcon`, `ListItem`, `Tabs`, `StatusBar`, `Code`, `Section`, `Timeline` | concluída |
 | 3 | Infraestrutura: contexto de idioma, tipos de conteúdo, `constants/`, hooks globais | concluída |
-| 4 | Shell do workbench: navegação, barra de título, explorer, abas, trilha, numeração de linhas, paginação, barra de status | pendente |
-| 5 | Hero e transição por rolagem | pendente |
-| 6 | Seções (depoimentos com um mock por enquanto) | pendente |
+| 4 | Shell do workbench: navegação, barra de título, explorer, abas, trilha, numeração de linhas, paginação, barra de status | concluída |
+| 5 | Seções (depoimentos com um mock por enquanto) e composição no `app.tsx` | pendente |
+| 6 | Hero e transição por rolagem (o logo e o arquivo da barra de status passam a voltar ao hero) | pendente |
 | 7 | Paleta de comandos | pendente |
 | 8 | Atalhos globais, hash da URL e acabamento (a11y, SEO, Lighthouse) | pendente |
 | 9 | Deploy | a definir |

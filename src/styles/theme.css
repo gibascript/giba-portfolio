@@ -42,8 +42,10 @@
   --outline-color-strong: var(--gray-600);
 
   --font-*: initial;
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'Iosevka', ui-monospace, 'JetBrains Mono', Menlo, Monaco, monospace;
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:
+    'Iosevka', ui-monospace, 'JetBrains Mono', Menlo, Monaco, monospace;
   --font-display: var(--font-mono);
 
   /* UI scale (ayu designer) plus the two prose sizes of the portfolio. */
@@ -88,6 +90,7 @@
   --leading-loose: 1.65;
 
   --tracking-caps: 0.05em;
+  --tracking-display: -0.02em;
 
   /* 4px base; chrome sizes of the editor workbench. */
   --spacing: 4px;
