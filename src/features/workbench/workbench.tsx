@@ -76,6 +76,7 @@ export default function Workbench({ files }: WorkbenchProps) {
             <WorkbenchPager
               locale={locale.locale}
               activeFile={workbench.activeFile}
+              shortcutsEnabled={workbench.shortcutsEnabled}
               onStep={workbench.stepFile}
             />
           </WorkbenchEditor>

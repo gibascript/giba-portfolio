@@ -41,7 +41,7 @@ describe('CommandPalette', () => {
     const search = await openPalette();
 
     expect(search).toHaveFocus();
-    expect(screen.getAllByRole('option')).toHaveLength(14);
+    expect(screen.getAllByRole('option')).toHaveLength(15);
   });
 
   it('runs the command picked with the arrows and Enter', async () => {

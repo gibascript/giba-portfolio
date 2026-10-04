@@ -19,15 +19,17 @@ export type OpenWorkbenchFiles = {
 };
 
 /**
- * Open files of the workbench, starting with the first file (about) alone.
- * Closing every tab reopens it.
+ * Open files of the workbench, starting with `initialFile` alone (the one in
+ * the URL, or about). Closing every tab reopens about.
  */
-export function useOpenFiles(): OpenWorkbenchFiles {
+export function useOpenFiles(
+  initialFile?: WorkbenchFileId,
+): OpenWorkbenchFiles {
   const [first] = workbenchFileIds;
-  const [files, setFiles] = useState<OpenFiles<WorkbenchFileId>>({
-    active: first,
-    tabs: [first],
-  });
+  const [files, setFiles] = useState<OpenFiles<WorkbenchFileId>>(() => ({
+    active: initialFile ?? first,
+    tabs: [initialFile ?? first],
+  }));
 
   return {
     activeFile: files.active,

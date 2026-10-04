@@ -5,8 +5,10 @@ import { paletteCommands } from './palette-commands';
 function options() {
   return {
     locale: 'pt' as const,
+    shortcutsEnabled: true,
     openFile: vi.fn(),
     toggleLocale: vi.fn(),
+    toggleShortcuts: vi.fn(),
     copyText: vi.fn(),
     goHome: vi.fn(),
   };
@@ -18,7 +20,7 @@ describe('paletteCommands', () => {
 
     expect(commands.map((command) => command.group)).toEqual([
       ...Array(8).fill('Seções'),
-      ...Array(4).fill('Ações'),
+      ...Array(5).fill('Ações'),
       'Links',
       'Links',
     ]);
@@ -42,6 +44,34 @@ describe('paletteCommands', () => {
     expect(
       english.find((command) => command.id === 'switch-locale'),
     ).toMatchObject({ label: 'Mudar para português', hint: 'PT-BR' });
+  });
+
+  it('shows the single-key shortcuts only while they are on', () => {
+    const on = paletteCommands(options());
+    const off = paletteCommands({ ...options(), shortcutsEnabled: false });
+
+    expect(on.find((command) => command.label === 'Contato')?.shortcut).toBe(
+      '8',
+    );
+    expect(on.find((command) => command.id === 'switch-locale')?.shortcut).toBe(
+      'L',
+    );
+    expect(off.some((command) => command.shortcut)).toBe(false);
+  });
+
+  it('offers to turn the shortcuts off, or back on', () => {
+    const actions = options();
+    const on = paletteCommands(actions);
+    const off = paletteCommands({ ...options(), shortcutsEnabled: false });
+
+    const toggle = on.find((command) => command.id === 'toggle-shortcuts');
+    toggle?.run();
+
+    expect(toggle?.label).toBe('Desativar atalhos de uma tecla');
+    expect(
+      off.find((command) => command.id === 'toggle-shortcuts')?.label,
+    ).toBe('Ativar atalhos de uma tecla');
+    expect(actions.toggleShortcuts).toHaveBeenCalledOnce();
   });
 
   it('opens the profiles in a new tab', () => {

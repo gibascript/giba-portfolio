@@ -30,8 +30,10 @@ export default function CommandPalette() {
 
   const commands = paletteCommands({
     locale: locale.locale,
+    shortcutsEnabled: workbench.shortcutsEnabled,
     openFile: workbench.openFile,
     toggleLocale: locale.toggleLocale,
+    toggleShortcuts: workbench.toggleShortcuts,
     copyText: workbench.clipboard.copy,
     goHome: () => workbench.showStage('hero'),
   });

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Kbd } from '@/components/kbd';
 import type { PaletteCommand } from '@/features/command-palette/utils/command-search';
 
 type PaletteOptionProps = {
@@ -10,7 +11,8 @@ type PaletteOptionProps = {
 };
 
 /**
- * One command of the palette list: its group, label and hint. The `selected`
+ * One command of the palette list: its group, label, hint and single-key
+ * shortcut, when it has one (exposed as `aria-keyshortcuts`). The `selected`
  * option is highlighted and scrolled into view; moving the mouse over an
  * option selects it, and a click runs it.
  */
@@ -35,6 +37,7 @@ export function PaletteOption({
       id={id}
       role="option"
       aria-selected={selected}
+      aria-keyshortcuts={command.shortcut}
       onClick={onRun}
       onMouseMove={selected ? undefined : onSelect}
       className="flex h-8 cursor-pointer items-center gap-3 rounded-sm px-2.5 text-body aria-selected:bg-surface-selected aria-selected:text-strong"
@@ -46,6 +49,7 @@ export function PaletteOption({
       <span className="font-mono text-sm whitespace-nowrap text-muted">
         {command.hint}
       </span>
+      {command.shortcut && <Kbd aria-hidden>{command.shortcut}</Kbd>}
     </div>
   );
 }

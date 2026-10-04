@@ -28,14 +28,21 @@ export type StageMotion = StageView & {
 
 /**
  * Animates the transition between the hero and the workbench, starting on
- * the hero. The progress eases toward its target on each animation frame;
- * with reduced motion, every move jumps straight to a stage.
+ * `initialStage` (the workbench when the URL names a file). The progress eases
+ * toward its target on each animation frame; with reduced motion, every move
+ * jumps straight to a stage.
  */
-export function useStageMotion(): StageMotion {
+export function useStageMotion(initialStage: Stage): StageMotion {
   const reducedMotion = useMediaQuery(mediaQueries.reducedMotion);
   const [stageRoot, setStageRoot] = useState<HTMLElement | null>(null);
-  const stagePaint = useStagePaint(stageRoot);
-  const motion = useRef({ progress: 0, target: 0, frame: 0, settleTimer: 0 });
+  const initialProgress = stageProgress[initialStage];
+  const stagePaint = useStagePaint(stageRoot, initialProgress);
+  const motion = useRef({
+    progress: initialProgress,
+    target: initialProgress,
+    frame: 0,
+    settleTimer: 0,
+  });
 
   useEffect(() => {
     const current = motion.current;

@@ -39,12 +39,16 @@ describe('AppStatus', () => {
     renderStatus();
 
     await userEvent.click(
-      screen.getByRole('button', { name: 'Mudar idioma para inglês' }),
+      screen.getByRole('button', {
+        name: 'Mudar idioma para inglês: PT-BR EN',
+      }),
     );
 
     expect(screen.getByRole('status')).toHaveTextContent('Ready');
     expect(
-      screen.getByRole('button', { name: 'Switch language to Portuguese' }),
+      screen.getByRole('button', {
+        name: 'Switch language to Portuguese: PT-BR EN',
+      }),
     ).toBeInTheDocument();
   });
 

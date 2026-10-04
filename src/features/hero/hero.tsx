@@ -5,11 +5,12 @@ import { uiText } from '@/constants/ui-text';
 import { workbenchFileIds, workbenchFiles } from '@/constants/workbench-files';
 import { useLocaleContext } from '@/context/locale/use-locale-context';
 import { useWorkbenchContext } from '@/context/workbench/use-workbench-context';
+import { HeroShortcutHint } from '@/features/hero/components/actions/hero-shortcut-hint';
 import { HeroFileLink } from '@/features/hero/components/explorer/hero-file-link';
 import { HeroLineNumber } from '@/features/hero/components/heading/hero-line-number';
 import { HeroTypedRole } from '@/features/hero/components/heading/hero-typed-role';
+import { heroText } from '@/features/hero/constants/hero-text';
 import { heroContent } from '@/features/hero/content/hero';
-import { openWorkbenchLabel } from '@/features/hero/hero-text';
 
 /**
  * The landing screen, dressed as the first lines of a file: the name, the
@@ -55,8 +56,12 @@ export default function Hero() {
             variant="primary"
             onClick={() => workbench.showStage('workbench')}
           >
-            {openWorkbenchLabel[locale.locale]} <span aria-hidden>→</span>
+            {heroText[locale.locale].openWorkbench} <span aria-hidden>→</span>
           </Button>
+          <HeroShortcutHint
+            locale={locale.locale}
+            shortcutsEnabled={workbench.shortcutsEnabled}
+          />
         </div>
       </div>
       <nav

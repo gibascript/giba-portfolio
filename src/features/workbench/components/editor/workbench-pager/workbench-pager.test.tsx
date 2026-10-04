@@ -6,7 +6,14 @@ import { WorkbenchPager } from './workbench-pager';
 describe('WorkbenchPager', () => {
   it('names the neighbor files, wrapping from the first file to the last', async () => {
     const onStep = vi.fn();
-    render(<WorkbenchPager locale="pt" activeFile="about" onStep={onStep} />);
+    render(
+      <WorkbenchPager
+        locale="pt"
+        activeFile="about"
+        shortcutsEnabled
+        onStep={onStep}
+      />,
+    );
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Arquivo anterior: contato.sh' }),

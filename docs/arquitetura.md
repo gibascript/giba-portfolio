@@ -94,10 +94,19 @@ atualizada a cada segundo) e o botão `PT-BR | EN`.
 | `workbench/` | arquivo ativo e abas (`openFile`, `closeTab`, `stepFile`), clipboard compartilhado | implementado |
 | `workbench/` (estágio) | `stage`, visibilidade das telas, `showStage`, `moveStageBy` (ver Estágios) | implementado |
 | `workbench/` (paleta) | `paletteOpen`, `openPalette`, `closePalette`, `togglePalette` | implementado |
+| `workbench/` (atalhos) | `shortcutsEnabled`, `toggleShortcuts` (`localStorage` `gb-portfolio-shortcuts`) | implementado |
 
-O arquivo ativo é sincronizado com o hash da URL pelo `id` do arquivo, que não
-muda com o idioma (`#/projects`, `#/contact`), permitindo link direto e o botão
-voltar do navegador.
+### URL
+
+O hash segue a tela pelo `id` do arquivo, que não muda com o idioma:
+`#/projects` no workbench, nenhum hash no hero (`useHashSync`).
+
+- Um link com `#/contact` abre direto no workbench, com o arquivo aberto e sem
+  animação.
+- Cada troca de tela vira uma entrada no histórico: voltar e avançar do
+  navegador passeiam pelos arquivos e pelo hero.
+- Um hash desconhecido é descartado na primeira sincronização (sem criar
+  entrada).
 
 ### Infraestrutura compartilhada
 
@@ -218,17 +227,37 @@ quebra o `tsc`.
 
 | Atalho | Ação | Onde |
 | --- | --- | --- |
-| `⌘K` / `Ctrl K` | abre e fecha a paleta de comandos (implementado) | sempre |
-| `Enter` | abre o workbench | hero |
+| `⌘K` / `Ctrl K` | abre e fecha a paleta de comandos | sempre |
+| `Enter` | abre o workbench (exceto com foco em botão ou link) | hero |
 | `1`–`8` | abre o arquivo correspondente | hero e workbench |
 | `[` / `]` | arquivo anterior / próximo | workbench |
 | `Esc` | volta ao hero (ou fecha a paleta) | workbench |
 | `L` | alterna o idioma | sempre |
 
-Os atalhos de uma tecla só podem ser desativados pela paleta ("Desativar
-atalhos"), com a escolha salva em `localStorage`, atendendo ao critério WCAG
-2.1.4. A paleta segue o padrão combobox (`aria-activedescendant`) e prende o
-foco; ao trocar de estágio, o foco vai para o estágio visível.
+- Atalhos de uma tecla ignoram teclas digitadas em campos ou com modificador,
+  e não escutam com a paleta aberta (`utils/single-key-shortcuts`).
+- Podem ser desativados e reativados pela paleta ("Desativar atalhos de uma
+  tecla"), com a escolha salva em `localStorage` (WCAG 2.1.4). Desativados,
+  somem as teclas da paleta, do pager e o `↵` da dica do hero.
+- Botões com atalho expõem `aria-keyshortcuts`.
+- A paleta segue o padrão combobox (`aria-activedescendant`) e prende o foco;
+  ao trocar de estágio, o foco vai para o estágio visível.
+
+### Auditoria (Lighthouse 12, desktop, build de produção)
+
+| Tela | Performance | Acessibilidade | Boas práticas | SEO |
+| --- | --- | --- | --- | --- |
+| hero (`/`) | 100 | 96 | 100 | 100 |
+| workbench (`/#/projects`) | 100 | 92 | 100 | 100 |
+
+Pendências conhecidas, ambas decisões de design:
+
+- **Contraste:** `text-muted` (branco 44%, `#707070` no preto) dá 4,24:1, abaixo
+  de 4,5:1 (WCAG 1.4.3) em textos reais (status, rótulos de painel, períodos,
+  dicas). `text-faint`, `text-ghost` e o comentário do hero também falham, mas
+  são decorativos (numeração de linhas, números dos projetos).
+- **Tamanho de alvo:** linhas do explorer (22px de altura) e o "×" das abas
+  (16px) ficam abaixo dos 24px do WCAG 2.5.8.
 
 ## Roteiro
 
@@ -241,7 +270,7 @@ foco; ao trocar de estágio, o foco vai para o estágio visível.
 | 5 | Seções (depoimentos com um mock por enquanto) e composição no `app.tsx` | concluída |
 | 6 | Hero e transição por rolagem (o logo e o arquivo da barra de status voltam ao hero) | concluída |
 | 7 | Paleta de comandos | concluída |
-| 8 | Atalhos globais, hash da URL e acabamento (a11y, SEO, Lighthouse) | pendente |
+| 8 | Atalhos globais, hash da URL e acabamento (a11y, SEO, Lighthouse) | concluída |
 | 9 | Deploy | a definir |
 
 ## Referência do protótipo

@@ -58,19 +58,19 @@ export default function AppStatus() {
           UTC−3
         </StatusBarItem>
         <StatusBarButton
-          aria-label={text.switchLocale}
           title={text.switchLocale}
           onClick={locale.toggleLocale}
           className="gap-1.5 font-mono text-sm"
         >
+          <span className="sr-only">{text.switchLocale}:</span>{' '}
           <span
             className={locale.locale === 'pt' ? 'text-strong' : 'text-faint'}
           >
             PT-BR
-          </span>
+          </span>{' '}
           <span aria-hidden className="text-faint">
             |
-          </span>
+          </span>{' '}
           <span
             className={locale.locale === 'en' ? 'text-strong' : 'text-faint'}
           >

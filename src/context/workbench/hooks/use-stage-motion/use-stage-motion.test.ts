@@ -5,7 +5,7 @@ import { useStageMotion } from './use-stage-motion';
 
 function renderStage() {
   const root = document.createElement('div');
-  const hook = renderHook(() => useStageMotion());
+  const hook = renderHook(() => useStageMotion('hero'));
   act(() => hook.result.current.setStageRoot(root));
 
   return { ...hook, root };

@@ -2,17 +2,20 @@ import { createContext } from 'react';
 import type { Clipboard } from '@/hooks/use-clipboard';
 import type { OpenWorkbenchFiles } from './hooks/use-open-files';
 import type { Palette } from './hooks/use-palette';
+import type { ShortcutsPreference } from './hooks/use-shortcuts-preference';
 import type { StageMotion } from './hooks/use-stage-motion';
 
 /**
  * State shared by the hero, the workbench, the command palette and the status
- * bar: the open files, the hero ↔ workbench transition, the palette, and the
- * clipboard, whose "copied" feedback shows in the status bar wherever the copy
- * happened. Opening a file also shows the workbench.
+ * bar: the open files, the hero ↔ workbench transition, the palette, the
+ * single-key shortcuts preference, and the clipboard, whose "copied" feedback
+ * shows in the status bar wherever the copy happened. Opening a file also
+ * shows the workbench.
  */
 export type WorkbenchContextValue = OpenWorkbenchFiles &
   StageMotion &
-  Palette & {
+  Palette &
+  ShortcutsPreference & {
     clipboard: Clipboard;
   };
 

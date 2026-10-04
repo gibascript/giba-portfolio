@@ -14,5 +14,6 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   localStorage.clear();
+  window.history.replaceState(null, '', '/');
   vi.unstubAllGlobals();
 });
