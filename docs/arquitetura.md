@@ -41,11 +41,26 @@ A transição acompanha a rolagem (roda do mouse e toque): o progresso vai de 0 
 
 | Contexto (`src/context/`) | Responsabilidade | Status |
 | --- | --- | --- |
-| `locale/` | idioma ativo, persistência em `localStorage`, `<html lang>` | planejado |
+| `locale/` | idioma ativo (`pt` padrão, `en`), persistência em `localStorage` (`gb-portfolio-lang`), `<html lang>`, `toggleLocale` | implementado |
 | `workbench/` | arquivo ativo, abas abertas, estágio, paleta aberta, feedback de cópia | planejado |
 
-O arquivo ativo é sincronizado com o hash da URL (`#/projetos`), permitindo
-link direto e o botão voltar do navegador.
+O arquivo ativo é sincronizado com o hash da URL pelo `id` do arquivo, que não
+muda com o idioma (`#/projects`, `#/contact`), permitindo link direto e o botão
+voltar do navegador.
+
+### Infraestrutura compartilhada
+
+| Onde | O quê |
+| --- | --- |
+| `constants/workbench-files.ts` | os 8 arquivos, em ordem: `id`, ícone, nome e título por idioma |
+| `constants/links.ts` | e-mail, GitHub, LinkedIn e o CV (`src/assets/gilberto-alves-cv.pdf`) |
+| `constants/ui-text.ts` | rótulos usados por 2+ features (Explorer, Seções, Links, Comandos, Baixar currículo, Copiar e-mail, E-mail copiado) |
+| `constants/storage-keys.ts`, `media-queries.ts`, `durations.ts` | chaves de `localStorage`, consultas de mídia (`wide` = 860px, reduced motion), duração do feedback de cópia |
+| `hooks/use-media-query` | segue uma media query (`useSyncExternalStore`) |
+| `hooks/use-local-storage` | preferência em JSON; valor inválido ou storage bloqueado não quebram |
+| `hooks/use-clipboard` | copia e marca `copied` por 2,2 s; cópia recusada não é anunciada |
+| `utils/locale` | `Locale`, `Localized<T>`, `isLocale`, `htmlLangs` |
+| `utils/cyclic-step` | passo circular para arquivo anterior/próximo |
 
 ## Design tokens
 
@@ -133,7 +148,7 @@ foco; ao trocar de estágio, o foco vai para o estágio visível.
 | --- | --- | --- |
 | 1 | Fundação: Tailwind + tokens, fontes, `cn`, alias `@/`, Vitest | concluída |
 | 2 | Componentes globais: `Button`, `Kbd`, `FileIcon`, `ListItem`, `Tabs`, `StatusBar`, `Code`, `Section`, `Timeline` | concluída |
-| 3 | Infraestrutura: contexto de idioma, tipos de conteúdo, `constants/`, hooks globais | pendente |
+| 3 | Infraestrutura: contexto de idioma, tipos de conteúdo, `constants/`, hooks globais | concluída |
 | 4 | Shell do workbench: navegação, barra de título, explorer, abas, trilha, numeração de linhas, paginação, barra de status | pendente |
 | 5 | Hero e transição por rolagem | pendente |
 | 6 | Seções (depoimentos com um mock por enquanto) | pendente |

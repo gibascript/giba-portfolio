@@ -73,7 +73,7 @@ src/
   constants/                # app-wide constants (links, breakpoints, workbench files)
   styles/                   # global.css entry, fonts, raw palette, Tailwind theme, base
   assets/                   # fonts, icons, the CV
-  test/                     # Vitest setup only
+  test/                     # Vitest setup and shared test doubles (mockMatchMedia)
 ```
 
 A feature is self-contained and mirrors the same layout inside its folder:
