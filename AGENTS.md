@@ -144,7 +144,9 @@ Tailwind CSS 4, configured in CSS. `src/styles/global.css` imports, in order:
 - `fonts.css`: Iosevka (woff2, Latin subset), the mono and display face;
 - `tokens.css`: the raw giba-ds palette (`--gray-*`, `--ink-*`, `--syn-*`);
 - `theme.css`: the semantic tokens as `@theme` variables;
-- `base.css`: element defaults (focus ring, links, scrollbars, reduced motion).
+- `base.css`: element defaults (focus ring, links, scrollbars, reduced motion);
+- `utilities.css`: custom `@utility` classes that need values a token cannot
+  express, such as the stage transition driven by `--stage-ease`.
 
 Rules:
 

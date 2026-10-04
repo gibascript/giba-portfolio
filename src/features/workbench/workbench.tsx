@@ -25,7 +25,9 @@ type WorkbenchProps = {
 export default function Workbench({ files }: WorkbenchProps) {
   const locale = useLocaleContext();
   const workbench = useWorkbenchContext();
-  const drawer = useExplorerDrawer(workbench.activeFile);
+  const drawer = useExplorerDrawer(
+    `${workbench.stage}/${workbench.activeFile}`,
+  );
   const explorerId = useId();
   const fileName = workbenchFiles[workbench.activeFile].name[locale.locale];
   const File = files[workbench.activeFile];
@@ -43,6 +45,7 @@ export default function Workbench({ files }: WorkbenchProps) {
         explorerId={explorerId}
         explorerOpen={drawer.open}
         onToggleExplorer={drawer.toggle}
+        onHome={() => workbench.showStage('hero')}
       />
       <div className="relative flex min-h-0 flex-1">
         <WorkbenchExplorer

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import type { WorkbenchFileId } from '@/constants/workbench-files';
 
 /** Whether the explorer drawer is open, and how to toggle or close it. */
 export type ExplorerDrawer = {
@@ -10,18 +9,22 @@ export type ExplorerDrawer = {
 
 /**
  * The explorer as a drawer, below the `md` breakpoint (wider, it is always
- * shown by CSS). The drawer remembers the file it was opened over, so opening
- * another file from anywhere (explorer, palette, pager) also closes it.
+ * shown by CSS). Any change of `scope` closes it, so a scope that names the
+ * stage and the open file closes it whenever another file opens (from the
+ * explorer, the palette or the pager) or the page goes back to the hero.
  *
- * @param activeFile - File open in the editor.
+ * @param scope - Key of the situation the drawer belongs to.
  */
-export function useExplorerDrawer(activeFile: WorkbenchFileId): ExplorerDrawer {
-  const [openOver, setOpenOver] = useState<WorkbenchFileId | null>(null);
-  const open = openOver === activeFile;
+export function useExplorerDrawer(scope: string): ExplorerDrawer {
+  const [drawer, setDrawer] = useState({ scope, open: false });
+
+  if (drawer.scope !== scope) {
+    setDrawer({ scope, open: false });
+  }
 
   return {
-    open,
-    toggle: () => setOpenOver(open ? null : activeFile),
-    close: () => setOpenOver(null),
+    open: drawer.scope === scope && drawer.open,
+    toggle: () => setDrawer({ scope, open: !drawer.open }),
+    close: () => setDrawer({ scope, open: false }),
   };
 }

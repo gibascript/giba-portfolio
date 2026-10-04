@@ -22,19 +22,30 @@ export default function AppStatus() {
   const workbench = useWorkbenchContext();
   const now = useNow();
   const text = appStatusText[locale.locale];
+  const ui = uiText[locale.locale];
   const copied = workbench.clipboard.copied;
+  const fileName = workbenchFiles[workbench.activeFile].name[locale.locale];
 
   return (
     <StatusBar>
       <StatusBarGroup>
-        <StatusBarItem>
-          {workbenchFiles[workbench.activeFile].name[locale.locale]}
-        </StatusBarItem>
+        {workbench.stage === 'hero' && (
+          <StatusBarItem>~/gilberto-alves</StatusBarItem>
+        )}
+        {workbench.stage === 'workbench' && (
+          <StatusBarButton
+            aria-label={`${fileName} — ${ui.home}`}
+            title={ui.home}
+            onClick={() => workbench.showStage('hero')}
+          >
+            {fileName}
+          </StatusBarButton>
+        )}
         <StatusBarItem
           role="status"
           className={copied ? 'text-success' : 'text-muted'}
         >
-          {copied ? `✓ ${uiText[locale.locale].emailCopied}` : text.ready}
+          {copied ? `✓ ${ui.emailCopied}` : text.ready}
         </StatusBarItem>
       </StatusBarGroup>
       <StatusBarGroup>

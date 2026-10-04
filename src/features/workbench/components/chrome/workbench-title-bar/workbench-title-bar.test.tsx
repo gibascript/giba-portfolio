@@ -14,6 +14,7 @@ describe('WorkbenchTitleBar', () => {
         explorerId="explorer"
         explorerOpen={false}
         onToggleExplorer={onToggleExplorer}
+        onHome={vi.fn()}
       />,
     );
 
@@ -34,11 +35,32 @@ describe('WorkbenchTitleBar', () => {
         explorerId="explorer"
         explorerOpen={false}
         onToggleExplorer={vi.fn()}
+        onHome={vi.fn()}
       />,
     );
 
     const download = screen.getByRole('link', { name: 'Download CV' });
     expect(download).toHaveAttribute('href', links.cv.url);
     expect(download).toHaveAttribute('download', 'gilberto-alves-cv.pdf');
+  });
+
+  it('goes back home from the wordmark', async () => {
+    const onHome = vi.fn();
+    render(
+      <WorkbenchTitleBar
+        locale="pt"
+        fileName="sobre.md"
+        explorerId="explorer"
+        explorerOpen={false}
+        onToggleExplorer={vi.fn()}
+        onHome={onHome}
+      />,
+    );
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'gilberto-alves. — Início' }),
+    );
+
+    expect(onHome).toHaveBeenCalledOnce();
   });
 });

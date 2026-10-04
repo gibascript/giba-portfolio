@@ -1,0 +1,28 @@
+/*
+ * Hero ↔ workbench transition. The stage root sets `--stage-ease`, the eased
+ * progress from 0 (hero) to 1 (workbench), on every animation frame; the
+ * layers derive their motion from it, without a React render per frame.
+ */
+@utility stage-hero {
+  transform-origin: 50% 0%;
+  opacity: max(0, calc(1 - var(--stage-ease, 0) * 1.15));
+  transform: translateY(calc(var(--stage-ease, 0) * -32vh))
+    scale(calc(1 - var(--stage-ease, 0) * 0.5));
+  will-change: transform, opacity;
+}
+
+@utility stage-workbench {
+  transform: translateY(calc((1 - var(--stage-ease, 0)) * 100%));
+  will-change: transform;
+}
+
+/* Blinking block cursor after the hero typing effect. */
+@utility typing-cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 3px;
+  vertical-align: -0.12em;
+  background-color: --theme(--background-color-accent);
+  animation: --theme(--animate-blink);
+}

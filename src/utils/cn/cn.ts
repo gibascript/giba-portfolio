@@ -22,7 +22,15 @@ const twMerge = extendTailwindMerge({
       ],
       leading: ['code'],
       shadow: ['popup', 'lift', 'focus'],
-      spacing: ['status-bar', 'tab-bar', 'title-bar', 'gutter', 'sidebar'],
+      spacing: [
+        'status-bar',
+        'tab-bar',
+        'title-bar',
+        'gutter',
+        'sidebar',
+        'hero-nudge',
+        'hero-dot',
+      ],
       text: [
         'prose',
         'prose-lg',
@@ -37,7 +45,7 @@ const twMerge = extendTailwindMerge({
       tracking: ['caps', 'display'],
     },
     classGroups: {
-      'grid-cols': [{ 'grid-cols': ['cards', 'stack'] }],
+      'grid-cols': [{ 'grid-cols': ['cards', 'stack', 'gutter'] }],
     },
   },
 });

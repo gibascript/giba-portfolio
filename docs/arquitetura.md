@@ -13,9 +13,10 @@ de comandos e barra de status. Cada seção do portfólio é um "arquivo".
 ```mermaid
 flowchart TD
   App["app.tsx"] --> Locale["LocaleProvider (pt-BR | en)"]
-  Locale --> Workbench["WorkbenchProvider (arquivo ativo, abas, clipboard)"]
-  Workbench --> Hero["features/hero"]
-  Workbench --> Shell["features/workbench (barra de título, explorer, abas, editor)"]
+  Locale --> Workbench["WorkbenchProvider (arquivo ativo, abas, estágio, clipboard)"]
+  Workbench --> Stage["features/stage (camadas, rolagem, foco)"]
+  Stage --> Hero["features/hero"]
+  Stage --> Shell["features/workbench (barra de título, explorer, abas, editor)"]
   Workbench --> Palette["features/command-palette"]
   Workbench --> Status["features/app-status (barra de status)"]
   Shell --> Files["about · experience · projects · certifications · stack · education · testimonials · contact"]
@@ -55,17 +56,35 @@ copiado" (o feedback do clipboard do contexto, venha a cópia de onde vier).
 Direita: "Brasil ·" (só a partir de `md`), a hora de Brasília (`HH:mm:ss`,
 atualizada a cada segundo) e o botão `PT-BR | EN`.
 
-### Estágios
+### Estágios (`features/stage` + `features/hero`)
 
 ```
- hero ──(rolar, Enter, "Abrir workbench")──▶ workbench
-   ▲                                             │
-   └────────(Esc, "Início", logo, rolar ↑)───────┘
+ hero ──(rolar ↓, "Abrir workbench", arquivo do explorer do hero)──▶ workbench
+   ▲                                                                  │
+   └──────────(rolar ↑ no topo do arquivo, logo, arquivo na barra de status)
 ```
 
-A transição acompanha a rolagem (roda do mouse e toque): o progresso vai de 0 a
-1 com suavização e encaixa no estágio mais próximo (limiar de 35%). Com
-`prefers-reduced-motion`, a troca é imediata.
+- O `Stage` empilha as duas telas (recebidas do `app.tsx` como `heroScreen` e
+  `workbenchScreen`). A tela que não é a atual fica `inert` e, quando
+  totalmente coberta, `invisible`.
+- O motor (`useStageMotion`, no `WorkbenchProvider`) guarda alvo e progresso
+  (0 = hero, 1 = workbench). A cada quadro o progresso anda 12% da distância
+  até o alvo, e o valor suavizado (ease-in-out) vai para a variável CSS
+  `--stage-ease` da raiz. As utilidades `stage-hero` (some, sobe e encolhe à
+  metade) e `stage-workbench` (sobe de baixo) leem essa variável: **não há
+  render do React por quadro**; o React só atualiza ao trocar de estágio ou de
+  visibilidade.
+- Roda do mouse e toque movem o alvo (900px de rolagem = transição inteira).
+  Parada a rolagem por 220ms, o alvo encaixa: workbench acima de 35%, hero
+  abaixo, nos dois sentidos. Antes de mover a transição, a rolagem rola o
+  conteúdo que ainda tem para onde ir (o hero para baixo; o arquivo aberto para
+  cima).
+- Com `prefers-reduced-motion`, qualquer movimento vai direto ao estágio.
+- Foco: se a troca deixa o foco na tela que ficou `inert` (ou no `body`), ele
+  vai para a tela nova.
+- O hero (`features/hero`) tem o nome como `h1`, os papéis digitados (leitores
+  de tela recebem só o primeiro; com movimento reduzido ele aparece inteiro), a
+  headline, o botão "Abrir workbench" e um explorer que abre cada arquivo.
 
 ## Estado compartilhado
 
@@ -73,7 +92,8 @@ A transição acompanha a rolagem (roda do mouse e toque): o progresso vai de 0 
 | --- | --- | --- |
 | `locale/` | idioma ativo (`pt` padrão, `en`), persistência em `localStorage` (`gb-portfolio-lang`), `<html lang>`, `toggleLocale` | implementado |
 | `workbench/` | arquivo ativo e abas (`openFile`, `closeTab`, `stepFile`), clipboard compartilhado | implementado |
-| `workbench/` (próximas etapas) | estágio hero ↔ workbench, paleta aberta | planejado |
+| `workbench/` (estágio) | `stage`, visibilidade das telas, `showStage`, `moveStageBy` (ver Estágios) | implementado |
+| `workbench/` (próxima etapa) | paleta aberta | planejado |
 
 O arquivo ativo é sincronizado com o hash da URL pelo `id` do arquivo, que não
 muda com o idioma (`#/projects`, `#/contact`), permitindo link direto e o botão
@@ -203,7 +223,7 @@ foco; ao trocar de estágio, o foco vai para o estágio visível.
 | 3 | Infraestrutura: contexto de idioma, tipos de conteúdo, `constants/`, hooks globais | concluída |
 | 4 | Shell do workbench: navegação, barra de título, explorer, abas, trilha, numeração de linhas, paginação, barra de status | concluída |
 | 5 | Seções (depoimentos com um mock por enquanto) e composição no `app.tsx` | concluída |
-| 6 | Hero e transição por rolagem (o logo e o arquivo da barra de status passam a voltar ao hero) | pendente |
+| 6 | Hero e transição por rolagem (o logo e o arquivo da barra de status voltam ao hero) | concluída |
 | 7 | Paleta de comandos | pendente |
 | 8 | Atalhos globais, hash da URL e acabamento (a11y, SEO, Lighthouse) | pendente |
 | 9 | Deploy | a definir |

@@ -10,11 +10,12 @@ type WorkbenchTitleBarProps = {
   explorerId: string;
   explorerOpen: boolean;
   onToggleExplorer: () => void;
+  onHome: () => void;
 };
 
 /**
- * The 38px title bar: explorer toggle (below `md` only), the wordmark, the
- * open file in the middle and the CV download.
+ * The 38px title bar: explorer toggle (below `md` only), the wordmark, which
+ * goes back to the hero, the open file in the middle and the CV download.
  */
 export function WorkbenchTitleBar({
   locale,
@@ -22,6 +23,7 @@ export function WorkbenchTitleBar({
   explorerId,
   explorerOpen,
   onToggleExplorer,
+  onHome,
 }: WorkbenchTitleBarProps) {
   const ui = uiText[locale];
 
@@ -37,9 +39,15 @@ export function WorkbenchTitleBar({
       >
         <span aria-hidden>☰</span>
       </button>
-      <span className="px-1.5 py-1 font-display text-lg font-semibold tracking-display whitespace-nowrap text-strong">
+      <button
+        type="button"
+        aria-label={`gilberto-alves. — ${ui.home}`}
+        title={ui.home}
+        onClick={onHome}
+        className="rounded-sm px-1.5 py-1 font-display text-lg font-semibold tracking-display whitespace-nowrap text-strong transition-colors hover:bg-surface-hover"
+      >
         gilberto-alves<span className="text-accent">.</span>
-      </span>
+      </button>
       <p className="min-w-0 flex-1 truncate text-center text-md text-muted">
         {fileName} — {projectName}
       </p>

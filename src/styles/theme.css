@@ -99,6 +99,10 @@
   --spacing-title-bar: 38px;
   --spacing-gutter: 64px;
   --spacing-sidebar: 260px;
+  /* Drop of the hero line number beside the name, to sit by its cap height. */
+  --spacing-hero-nudge: 2.2vw;
+  /* Space before the gold dot of "Alves.", scaled with the name. */
+  --spacing-hero-dot: 0.08em;
 
   /* Responsive card grids: as many columns as fit, each at least this wide. */
   --grid-template-columns-cards: repeat(
@@ -109,6 +113,8 @@
     auto-fill,
     minmax(min(100%, 240px), 1fr)
   );
+  /* Line numbers beside code-like content (hero). */
+  --grid-template-columns-gutter: var(--spacing-gutter) minmax(0, 1fr);
 
   /* Text measures and fixed widths. */
   --container-*: initial;
