@@ -58,7 +58,7 @@ export function TabTrigger({
   return (
     <button
       type="button"
-      className={cn('flex h-full items-center gap-1.5 pr-1.5 pl-3', className)}
+      className={cn('flex h-full items-center gap-1.5 pr-0.5 pl-3', className)}
       {...props}
     >
       {icon && <FileIcon type={icon} />}
@@ -69,14 +69,15 @@ export function TabTrigger({
 
 /**
  * Closes the tab; named by `aria-label`, e.g. "Fechar sobre.md". Shown on the
- * active tab, on hover and on keyboard focus.
+ * active tab, on hover and on keyboard focus. The button is a 24px target
+ * (WCAG 2.5.8) around the glyph.
  */
 export function TabClose({ className, ...props }: TabCloseProps) {
   return (
     <button
       type="button"
       className={cn(
-        'mr-2.5 inline-flex size-4 items-center justify-center rounded-xs text-prose leading-none text-body opacity-0 group-hover:opacity-70 group-data-active:opacity-70 focus-visible:opacity-70',
+        'mr-1.5 inline-flex size-6 items-center justify-center rounded-xs text-prose leading-none text-body opacity-0 group-hover:opacity-70 group-data-active:opacity-70 focus-visible:opacity-70',
         className,
       )}
       {...props}

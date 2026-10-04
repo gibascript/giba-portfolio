@@ -13,9 +13,7 @@ function renderStage() {
 
 describe('useStageMotion', () => {
   beforeEach(() => {
-    vi.useFakeTimers({
-      toFake: ['setTimeout', 'clearTimeout', 'requestAnimationFrame'],
-    });
+    vi.useFakeTimers({ toFake: ['requestAnimationFrame'] });
   });
 
   afterEach(() => {
@@ -32,38 +30,55 @@ describe('useStageMotion', () => {
     expect(result.current.workbenchVisible).toBe(false);
   });
 
-  it('animates to the workbench, easing the stage root variable', () => {
+  it('animates to the workbench through the stage root variable', () => {
     mockMatchMedia(false);
     const { result, root } = renderStage();
 
     act(() => result.current.showStage('workbench'));
     act(() => vi.advanceTimersByTime(100));
 
-    const midway = Number(root.style.getPropertyValue('--stage-ease'));
+    const midway = Number(root.style.getPropertyValue('--stage-progress'));
     expect(midway).toBeGreaterThan(0);
     expect(midway).toBeLessThan(1);
     expect(result.current.workbenchVisible).toBe(true);
 
     act(() => vi.advanceTimersByTime(2000));
 
-    expect(root.style.getPropertyValue('--stage-ease')).toBe('1');
+    expect(root.style.getPropertyValue('--stage-progress')).toBe('1');
     expect(result.current.stage).toBe('workbench');
     expect(result.current.heroVisible).toBe(false);
   });
 
-  it('settles a short scroll back on the hero and a long one on the workbench', () => {
+  it('stays wherever scrolling stops, however short the scroll', () => {
     mockMatchMedia(false);
-    const { result } = renderStage();
+    const { result, root } = renderStage();
 
     act(() => result.current.moveStageBy(0.2));
     act(() => vi.advanceTimersByTime(3000));
-    expect(result.current.stageTarget()).toBe(0);
+
+    expect(result.current.stageTarget()).toBeCloseTo(0.2);
+    expect(Number(root.style.getPropertyValue('--stage-progress'))).toBeCloseTo(
+      0.2,
+    );
     expect(result.current.stage).toBe('hero');
+    expect(result.current.workbenchVisible).toBe(true);
 
     act(() => result.current.moveStageBy(0.4));
     act(() => vi.advanceTimersByTime(3000));
-    expect(result.current.stageTarget()).toBe(1);
+
+    expect(result.current.stageTarget()).toBeCloseTo(0.6);
     expect(result.current.stage).toBe('workbench');
+  });
+
+  it('never scrolls past either end', () => {
+    mockMatchMedia(false);
+    const { result } = renderStage();
+
+    act(() => result.current.moveStageBy(-0.5));
+    expect(result.current.stageTarget()).toBe(0);
+
+    act(() => result.current.moveStageBy(3));
+    expect(result.current.stageTarget()).toBe(1);
   });
 
   it('jumps straight to a stage with reduced motion', () => {
@@ -73,6 +88,6 @@ describe('useStageMotion', () => {
     act(() => result.current.moveStageBy(0.01));
 
     expect(result.current.stage).toBe('workbench');
-    expect(root.style.getPropertyValue('--stage-ease')).toBe('1');
+    expect(root.style.getPropertyValue('--stage-progress')).toBe('1');
   });
 });

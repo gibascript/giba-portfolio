@@ -41,7 +41,10 @@ export function WorkbenchProvider({ children }: PropsWithChildren) {
   const showHero = () => stageMotion.showStage('hero');
 
   useHashSync({
-    stage: stageMotion.stage,
+    restingStage:
+      stageMotion.heroVisible === stageMotion.workbenchVisible
+        ? null
+        : stageMotion.stage,
     activeFile: openFiles.activeFile,
     openFile,
     showHero,

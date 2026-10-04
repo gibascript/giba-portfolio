@@ -3,22 +3,26 @@ import type { WorkbenchFileId } from '@/constants/workbench-files';
 import { fileFromHash, screenHash } from '@/context/workbench/utils/file-hash';
 import type { Stage } from '@/context/workbench/utils/stage-motion';
 
-/** What is on screen, and how to show what a URL names. */
+/**
+ * The stage the page rests on (`null` while a transition shows both), the
+ * open file, and how to show what a URL names.
+ */
 export type HashSyncOptions = {
-  stage: Stage;
+  restingStage: Stage | null;
   activeFile: WorkbenchFileId;
   openFile: (id: WorkbenchFileId) => void;
   showHero: () => void;
 };
 
 /**
- * Keeps the URL hash in step with the screen: `#/<file>` on the workbench,
- * no hash on the hero. Each change becomes a history entry, so the browser
- * back and forward buttons walk through the files and the hero; the first
- * sync only replaces the entry, dropping an unknown hash.
+ * Keeps the URL hash in step with the screen at rest: `#/<file>` on the
+ * workbench, no hash on the hero; a scroll stopped halfway keeps the last
+ * one. Each change becomes a history entry, so the browser back and forward
+ * buttons walk through the files and the hero; the first sync only replaces
+ * the entry, dropping an unknown hash.
  */
 export function useHashSync({
-  stage,
+  restingStage,
   activeFile,
   openFile,
   showHero,
@@ -46,7 +50,11 @@ export function useHashSync({
   }, [openFile, showHero]);
 
   useEffect(() => {
-    const hash = screenHash(stage, activeFile);
+    if (!restingStage) {
+      return;
+    }
+
+    const hash = screenHash(restingStage, activeFile);
 
     if (window.location.hash !== hash) {
       const url = hash || window.location.pathname + window.location.search;
@@ -54,5 +62,5 @@ export function useHashSync({
       window.history[method](null, '', url);
     }
     firstSync.current = false;
-  }, [stage, activeFile]);
+  }, [restingStage, activeFile]);
 }

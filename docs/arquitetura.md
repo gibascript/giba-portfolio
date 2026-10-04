@@ -68,17 +68,21 @@ atualizada a cada segundo) e o botão `PT-BR | EN`.
   `workbenchScreen`). A tela que não é a atual fica `inert` e, quando
   totalmente coberta, `invisible`.
 - O motor (`useStageMotion`, no `WorkbenchProvider`) guarda alvo e progresso
-  (0 = hero, 1 = workbench). A cada quadro o progresso anda 12% da distância
-  até o alvo, e o valor suavizado (ease-in-out) vai para a variável CSS
-  `--stage-ease` da raiz. As utilidades `stage-hero` (some, sobe e encolhe à
-  metade) e `stage-workbench` (sobe de baixo) leem essa variável: **não há
-  render do React por quadro**; o React só atualiza ao trocar de estágio ou de
-  visibilidade.
-- Roda do mouse e toque movem o alvo (900px de rolagem = transição inteira).
-  Parada a rolagem por 220ms, o alvo encaixa: workbench acima de 35%, hero
-  abaixo, nos dois sentidos. Antes de mover a transição, a rolagem rola o
-  conteúdo que ainda tem para onde ir (o hero para baixo; o arquivo aberto para
-  cima).
+  (0 = hero, 1 = workbench). A cada quadro o progresso anda uma fração da
+  distância até o alvo — 35% ao seguir a rolagem (só suaviza os degraus da
+  roda), 12% nas animações de botão e atalho — e vai, linear, para a variável
+  CSS `--stage-progress` da raiz. As utilidades `stage-hero` (some, sobe e
+  encolhe à metade) e `stage-workbench` (sobe de baixo) leem essa variável:
+  **não há render do React por quadro**; o React só atualiza ao trocar de
+  estágio ou de visibilidade.
+- **Rolagem livre:** roda do mouse e toque movem o alvo na proporção da
+  própria altura da tela (rolar uma altura = transição inteira), como o
+  conteúdo de uma página, e a transição **fica onde a rolagem parar**, sem
+  encaixe. Parada no meio, a tela atual é a que passou da metade. Nas pontas,
+  a rolagem primeiro rola o conteúdo que ainda tem para onde ir (o hero para
+  baixo; o arquivo aberto para cima).
+- A URL só muda quando a página repousa num estágio (só uma tela visível);
+  parada no meio, mantém o último hash.
 - Com `prefers-reduced-motion`, qualquer movimento vai direto ao estágio.
 - Foco: se a troca deixa o foco na tela que ficou `inert` (ou no `body`), ele
   vai para a tela nova.
@@ -139,7 +143,7 @@ global.css ─┬─ tailwindcss
 Princípios do giba-ds aplicados no tema:
 
 - **Fundo preto puro**; contraste vem da opacidade do branco, não do matiz:
-  `text-strong` (100%), `text-body` (62%), `text-muted` (44%), `text-faint`
+  `text-strong` (100%), `text-body` (62%), `text-muted` (47%), `text-faint`
   (23%), `text-ghost` (8%).
 - **Cor só como sintaxe esmaecida** (`text-syn-keyword`, `text-syn-tag`…) e um
   único acento dourado (`bg-accent`, `text-accent`).
@@ -248,16 +252,19 @@ quebra o `tsc`.
 | Tela | Performance | Acessibilidade | Boas práticas | SEO |
 | --- | --- | --- | --- | --- |
 | hero (`/`) | 100 | 96 | 100 | 100 |
-| workbench (`/#/projects`) | 100 | 92 | 100 | 100 |
+| workbench (`/#/projects`) | 100 | 96 | 100 | 100 |
 
-Pendências conhecidas, ambas decisões de design:
+Ajustes de acessibilidade sobre o protótipo:
 
-- **Contraste:** `text-muted` (branco 44%, `#707070` no preto) dá 4,24:1, abaixo
-  de 4,5:1 (WCAG 1.4.3) em textos reais (status, rótulos de painel, períodos,
-  dicas). `text-faint`, `text-ghost` e o comentário do hero também falham, mas
-  são decorativos (numeração de linhas, números dos projetos).
-- **Tamanho de alvo:** linhas do explorer (22px de altura) e o "×" das abas
-  (16px) ficam abaixo dos 24px do WCAG 2.5.8.
+- **Contraste:** `text-muted` subiu de branco 44% para 47% (`--ink-47`,
+  `#787878` no preto), 4,76:1, acima dos 4,5:1 do WCAG 1.4.3. `text-faint`,
+  `text-ghost` e o comentário do hero continuam abaixo, mas são decorativos
+  (numeração de linhas, números dos projetos). A exceção é o idioma inativo do
+  botão da barra de status (`EN` em `text-faint`, 1,87:1), texto real que segue
+  pendente.
+- **Tamanho de alvo:** as linhas do explorer têm 24px de altura (o VS Code usa
+  22px) e o "×" das abas tem uma área de clique de 24px em volta do glifo
+  (WCAG 2.5.8).
 
 ## Roteiro
 

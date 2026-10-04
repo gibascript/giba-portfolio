@@ -16,4 +16,5 @@ afterEach(() => {
   localStorage.clear();
   window.history.replaceState(null, '', '/');
   vi.unstubAllGlobals();
+  vi.useRealTimers();
 });

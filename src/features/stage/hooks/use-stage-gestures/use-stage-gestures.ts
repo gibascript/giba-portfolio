@@ -1,8 +1,5 @@
 import { useEffect } from 'react';
-import {
-  shouldMoveStage,
-  transitionDistance,
-} from '@/features/stage/utils/stage-gestures';
+import { shouldMoveStage } from '@/features/stage/utils/stage-gestures';
 
 /**
  * The stage `root` to listen on, where the transition is heading
@@ -17,14 +14,13 @@ export type StageGesturesOptions = {
 /** Pixels per wheel "line", for wheels that scroll by lines (Firefox). */
 const lineHeight = 30;
 
-/** Touch moves count double, as fingers travel less than wheels. */
-const touchFactor = 2;
-
 /**
  * Turns wheel and touch scrolling over the stage into the hero ↔ workbench
  * transition, whenever `shouldMoveStage` says the content has no room left.
- * The listeners are not passive, so a scroll that drives the transition does
- * not also scroll the page.
+ * One stage height of scrolling is the whole transition, so the workbench
+ * moves with the wheel or the finger as page content would, and stops where
+ * the scrolling stops. The listeners are not passive, so a scroll that drives
+ * the transition does not also scroll the page.
  */
 export function useStageGestures({
   root,
@@ -53,7 +49,7 @@ export function useStageGestures({
       if (event.cancelable) {
         event.preventDefault();
       }
-      moveStageBy(delta / transitionDistance);
+      moveStageBy(delta / root.clientHeight);
     };
 
     const onWheel = (event: WheelEvent) =>
@@ -68,7 +64,7 @@ export function useStageGestures({
     };
     const onTouchMove = (event: TouchEvent) => {
       const y = event.touches[0].clientY;
-      drive((touchY - y) * touchFactor, event);
+      drive(touchY - y, event);
       touchY = y;
     };
 

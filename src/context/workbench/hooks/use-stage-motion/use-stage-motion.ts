@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { mediaQueries } from '@/constants/media-queries';
 import {
+  followRates,
   followTarget,
-  settleTarget,
   stageProgress,
   type Stage,
   type StageView,
@@ -10,14 +10,12 @@ import {
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { useStagePaint } from './use-stage-paint';
 
-/** Wait after the last scroll before a halfway transition settles. */
-const settleDelay = 220;
-
 /**
  * The hero ↔ workbench transition. `setStageRoot` registers the element that
  * holds both layers, where the progress is painted; `showStage` animates to a
- * stage; `moveStageBy` follows scrolling, settling 220ms after it stops; and
- * `stageTarget` reads where the transition is heading (0 hero, 1 workbench).
+ * stage; `moveStageBy` follows scrolling, by a share of the whole transition,
+ * and stays wherever the scrolling stops; `stageTarget` reads where the
+ * transition is heading (0 hero, 1 workbench).
  */
 export type StageMotion = StageView & {
   setStageRoot: (element: HTMLElement | null) => void;
@@ -27,10 +25,10 @@ export type StageMotion = StageView & {
 };
 
 /**
- * Animates the transition between the hero and the workbench, starting on
- * `initialStage` (the workbench when the URL names a file). The progress eases
- * toward its target on each animation frame; with reduced motion, every move
- * jumps straight to a stage.
+ * Moves the page between the hero and the workbench, starting on
+ * `initialStage` (the workbench when the URL names a file). Scrolling drives
+ * the progress freely, like a page scroll; buttons and shortcuts animate it to
+ * a stage. With reduced motion, every move jumps straight to a stage.
  */
 export function useStageMotion(initialStage: Stage): StageMotion {
   const reducedMotion = useMediaQuery(mediaQueries.reducedMotion);
@@ -40,38 +38,32 @@ export function useStageMotion(initialStage: Stage): StageMotion {
   const motion = useRef({
     progress: initialProgress,
     target: initialProgress,
+    rate: followRates.animation,
     frame: 0,
-    settleTimer: 0,
   });
 
   useEffect(() => {
     const current = motion.current;
 
-    return () => {
-      cancelAnimationFrame(current.frame);
-      window.clearTimeout(current.settleTimer);
-    };
+    return () => cancelAnimationFrame(current.frame);
   }, []);
 
   const animate = () => {
     const current = motion.current;
-    current.progress = followTarget(current.progress, current.target);
+    current.progress = followTarget(
+      current.progress,
+      current.target,
+      current.rate,
+    );
     stagePaint.paint(current.progress);
     current.frame =
       current.progress === current.target ? 0 : requestAnimationFrame(animate);
   };
 
-  const moveTo = (target: number, settled: boolean) => {
+  const moveTo = (target: number, rate: number) => {
     const current = motion.current;
     current.target = Math.min(1, Math.max(0, target));
-    window.clearTimeout(current.settleTimer);
-
-    if (!settled && current.target > 0 && current.target < 1) {
-      current.settleTimer = window.setTimeout(
-        () => moveTo(settleTarget(current.target), true),
-        settleDelay,
-      );
-    }
+    current.rate = rate;
 
     if (reducedMotion) {
       current.progress = current.target;
@@ -84,11 +76,11 @@ export function useStageMotion(initialStage: Stage): StageMotion {
   return {
     ...stagePaint.view,
     setStageRoot,
-    showStage: (stage) => moveTo(stageProgress[stage], true),
+    showStage: (stage) => moveTo(stageProgress[stage], followRates.animation),
     moveStageBy: (delta) =>
       reducedMotion
-        ? moveTo(delta > 0 ? 1 : 0, true)
-        : moveTo(motion.current.target + delta, false),
+        ? moveTo(delta > 0 ? 1 : 0, followRates.animation)
+        : moveTo(motion.current.target + delta, followRates.scroll),
     stageTarget: () => motion.current.target,
   };
 }

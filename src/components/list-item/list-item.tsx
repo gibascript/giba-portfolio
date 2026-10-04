@@ -11,7 +11,7 @@ type ListItemProps<T extends ElementType> = GenericTag<T> & {
 };
 
 /**
- * A 22px row of the explorer tree, a `button` unless rendered `as` another
+ * A 24px row of the explorer tree, a `button` unless rendered `as` another
  * tag. The row marked with `aria-current="page"` is the selected one.
  *
  * @remarks
@@ -37,7 +37,7 @@ export function ListItem<T extends ElementType = 'button'>({
     <Tag
       {...(Tag === 'button' && { type: 'button' })}
       className={cn(
-        'relative flex h-5.5 w-full items-center gap-1.5 pr-3 text-left font-sans text-lg whitespace-nowrap text-body no-underline hover:bg-surface-selected hover:text-strong aria-[current=page]:bg-surface-selected aria-[current=page]:text-strong aria-[current=page]:outline aria-[current=page]:-outline-offset-1 aria-[current=page]:outline-strong',
+        'relative flex h-6 w-full items-center gap-1.5 pr-3 text-left font-sans text-lg whitespace-nowrap text-body no-underline hover:bg-surface-selected hover:text-strong aria-[current=page]:bg-surface-selected aria-[current=page]:text-strong aria-[current=page]:outline aria-[current=page]:-outline-offset-1 aria-[current=page]:outline-strong',
         nested ? 'pl-5' : 'pl-2',
         className,
       )}

@@ -1,8 +1,5 @@
 import type { StageScroll } from './stage-gestures.types';
 
-/** Pixels of scrolling for a whole hero ↔ workbench transition. */
-export const transitionDistance = 900;
-
 /** Slack, in pixels, when checking whether an element is at its scroll end. */
 const scrollSlack = 2;
 
@@ -11,10 +8,10 @@ const scrollSlack = 2;
  * scrolling the page content.
  *
  * @remarks
- * At rest on the hero, scrolling down first scrolls the hero itself, and
- * scrolling up does nothing. At rest on the workbench, scrolling up first
- * scrolls the open file (or any scrollable panel under the pointer), and
- * scrolling down only scrolls content. Mid-transition, every scroll drives it.
+ * At either end, scrolling first scrolls the content that still has room:
+ * the hero going down, the open file (or any scrollable panel under the
+ * pointer) going up. Scrolling up on the hero or down on the workbench never
+ * moves the transition. Stopped anywhere in between, every scroll moves it.
  */
 export function shouldMoveStage({ target, delta, from, root }: StageScroll) {
   if (delta === 0) {

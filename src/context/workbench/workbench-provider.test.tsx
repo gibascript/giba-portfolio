@@ -1,13 +1,13 @@
 import { act, fireEvent, renderHook } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { storageKeys } from '@/constants/storage-keys';
 import { useLocaleContext } from '@/context/locale/use-locale-context';
 import { AppProviders } from '@/test/app-providers';
 import { mockMatchMedia } from '@/test/match-media';
 import { useWorkbenchContext } from './use-workbench-context';
 
-function renderWorkbench() {
-  mockMatchMedia(true);
+function renderWorkbench(reducedMotion = true) {
+  mockMatchMedia(reducedMotion);
 
   return renderHook(
     () => ({ workbench: useWorkbenchContext(), locale: useLocaleContext() }),
@@ -88,6 +88,20 @@ describe('WorkbenchProvider', () => {
       renderWorkbench();
 
       expect(window.location.hash).toBe('');
+    });
+
+    it('keeps the hash until a scroll comes to rest on a stage', () => {
+      vi.useFakeTimers({ toFake: ['requestAnimationFrame'] });
+      const { result } = renderWorkbench(false);
+
+      act(() => result.current.workbench.moveStageBy(0.7));
+      act(() => vi.advanceTimersByTime(1000));
+      expect(result.current.workbench.stage).toBe('workbench');
+      expect(window.location.hash).toBe('');
+
+      act(() => result.current.workbench.moveStageBy(0.3));
+      act(() => vi.advanceTimersByTime(1000));
+      expect(window.location.hash).toBe('#/about');
     });
   });
 

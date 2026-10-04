@@ -1,18 +1,19 @@
 /*
- * Hero ↔ workbench transition. The stage root sets `--stage-ease`, the eased
- * progress from 0 (hero) to 1 (workbench), on every animation frame; the
- * layers derive their motion from it, without a React render per frame.
+ * Hero ↔ workbench transition. The stage root sets `--stage-progress`, from
+ * 0 (hero) to 1 (workbench), on every animation frame; the layers derive
+ * their motion from it, without a React render per frame. The mapping is
+ * linear, so scrolling moves the workbench as a page scroll would.
  */
 @utility stage-hero {
   transform-origin: 50% 0%;
-  opacity: max(0, calc(1 - var(--stage-ease, 0) * 1.15));
-  transform: translateY(calc(var(--stage-ease, 0) * -32vh))
-    scale(calc(1 - var(--stage-ease, 0) * 0.5));
+  opacity: max(0, calc(1 - var(--stage-progress, 0) * 1.15));
+  transform: translateY(calc(var(--stage-progress, 0) * -32vh))
+    scale(calc(1 - var(--stage-progress, 0) * 0.5));
   will-change: transform, opacity;
 }
 
 @utility stage-workbench {
-  transform: translateY(calc((1 - var(--stage-ease, 0)) * 100%));
+  transform: translateY(calc((1 - var(--stage-progress, 0)) * 100%));
   will-change: transform;
 }
 

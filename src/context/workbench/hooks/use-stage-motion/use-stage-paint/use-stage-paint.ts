@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  easeInOut,
   stageView,
   type StageView,
 } from '@/context/workbench/utils/stage-motion';
@@ -13,10 +12,10 @@ export type StagePaint = {
 
 /**
  * Paints a transition progress on `stageRoot`, starting at `initialProgress`:
- * its eased value goes to the `--stage-ease` CSS variable (read by the
- * `stage-*` utilities) on every frame, while the React view only updates when
- * a layer shows, hides or becomes the current one. A root registered later
- * gets the last painted progress.
+ * the value goes to the `--stage-progress` CSS variable (read by the `stage-*`
+ * utilities) on every frame, while the React view only updates when a layer
+ * shows, hides or becomes the current one. A root registered later gets the
+ * last painted progress.
  */
 export function useStagePaint(
   stageRoot: HTMLElement | null,
@@ -26,15 +25,12 @@ export function useStagePaint(
   const painted = useRef(initialProgress);
 
   useEffect(() => {
-    stageRoot?.style.setProperty(
-      '--stage-ease',
-      String(easeInOut(painted.current)),
-    );
+    stageRoot?.style.setProperty('--stage-progress', String(painted.current));
   }, [stageRoot]);
 
   const paint = (progress: number) => {
     painted.current = progress;
-    stageRoot?.style.setProperty('--stage-ease', String(easeInOut(progress)));
+    stageRoot?.style.setProperty('--stage-progress', String(progress));
 
     const next = stageView(progress);
     setView((current) =>
