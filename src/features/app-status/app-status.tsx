@@ -4,6 +4,7 @@ import {
   StatusBarGroup,
   StatusBarItem,
 } from '@/components/status-bar';
+import { paletteKeyShortcuts, paletteShortcut } from '@/constants/keyboard';
 import { uiText } from '@/constants/ui-text';
 import { workbenchFiles } from '@/constants/workbench-files';
 import { useLocaleContext } from '@/context/locale/use-locale-context';
@@ -75,6 +76,14 @@ export default function AppStatus() {
           >
             EN
           </span>
+        </StatusBarButton>
+        <StatusBarButton
+          aria-label={`${paletteShortcut} — ${ui.palette}`}
+          aria-keyshortcuts={paletteKeyShortcuts}
+          title={ui.palette}
+          onClick={workbench.openPalette}
+        >
+          {paletteShortcut}
         </StatusBarButton>
       </StatusBarGroup>
     </StatusBar>

@@ -1,17 +1,19 @@
 import type { PropsWithChildren } from 'react';
 import { useClipboard } from '@/hooks/use-clipboard';
 import { useOpenFiles } from './hooks/use-open-files';
+import { usePalette } from './hooks/use-palette';
 import { useStageMotion } from './hooks/use-stage-motion';
 import { WorkbenchContext } from './workbench-context';
 
 /**
- * Provides the {@link WorkbenchContext}: open files, stage transition and
- * clipboard. Opening or stepping to a file from anywhere (the hero list
- * included) also brings the workbench up.
+ * Provides the {@link WorkbenchContext}: open files, stage transition, command
+ * palette and clipboard. Opening or stepping to a file from anywhere (the hero
+ * list included) also brings the workbench up.
  */
 export function WorkbenchProvider({ children }: PropsWithChildren) {
   const openFiles = useOpenFiles();
   const stageMotion = useStageMotion();
+  const palette = usePalette();
   const clipboard = useClipboard();
 
   return (
@@ -19,6 +21,7 @@ export function WorkbenchProvider({ children }: PropsWithChildren) {
       value={{
         ...openFiles,
         ...stageMotion,
+        ...palette,
         clipboard,
         openFile: (id) => {
           openFiles.openFile(id);

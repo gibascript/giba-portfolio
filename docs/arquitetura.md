@@ -93,7 +93,7 @@ atualizada a cada segundo) e o botão `PT-BR | EN`.
 | `locale/` | idioma ativo (`pt` padrão, `en`), persistência em `localStorage` (`gb-portfolio-lang`), `<html lang>`, `toggleLocale` | implementado |
 | `workbench/` | arquivo ativo e abas (`openFile`, `closeTab`, `stepFile`), clipboard compartilhado | implementado |
 | `workbench/` (estágio) | `stage`, visibilidade das telas, `showStage`, `moveStageBy` (ver Estágios) | implementado |
-| `workbench/` (próxima etapa) | paleta aberta | planejado |
+| `workbench/` (paleta) | `paletteOpen`, `openPalette`, `closePalette`, `togglePalette` | implementado |
 
 O arquivo ativo é sincronizado com o hash da URL pelo `id` do arquivo, que não
 muda com o idioma (`#/projects`, `#/contact`), permitindo link direto e o botão
@@ -173,6 +173,22 @@ estado de hover em JavaScript).
 `GenericTag` (`src/utils/generic-tag`). O `EmptyState` do giba-ds ficou de
 fora: o único uso no protótipo era em depoimentos, que agora tem um depoimento mock.
 
+## Paleta de comandos (`features/command-palette`)
+
+- Abre com `⌘K` (Apple) / `Ctrl K` (demais), pelo botão "⌘K Comandos" da barra
+  de título ou pelo `⌘K` da barra de status. O rótulo e o
+  `aria-keyshortcuts` seguem o dispositivo (`constants/keyboard.ts`).
+- É um `<dialog>` modal nativo: prende o foco, deixa o resto da página inerte,
+  fecha com Esc, clique fora ou ao executar um comando. O painel é montado a
+  cada abertura, então a busca começa vazia.
+- Campo como combobox ARIA (`aria-activedescendant`); `↓`/`↑` movem a seleção
+  (param nas pontas), Enter executa, passar o mouse seleciona.
+- Busca sem acento e sem caixa em rótulo, dica e grupo
+  (`utils/command-search`).
+- Comandos (`utils/palette-commands`): as 8 seções; ações (trocar idioma — o
+  rótulo vem no idioma de destino —, copiar e-mail, baixar CV, ir ao início);
+  links (GitHub, LinkedIn em nova aba).
+
 ## Seções
 
 Cada arquivo do workbench é uma feature com `content/` tipado por idioma,
@@ -202,7 +218,7 @@ quebra o `tsc`.
 
 | Atalho | Ação | Onde |
 | --- | --- | --- |
-| `⌘K` / `Ctrl K` | abre e fecha a paleta de comandos | sempre |
+| `⌘K` / `Ctrl K` | abre e fecha a paleta de comandos (implementado) | sempre |
 | `Enter` | abre o workbench | hero |
 | `1`–`8` | abre o arquivo correspondente | hero e workbench |
 | `[` / `]` | arquivo anterior / próximo | workbench |
@@ -224,7 +240,7 @@ foco; ao trocar de estágio, o foco vai para o estágio visível.
 | 4 | Shell do workbench: navegação, barra de título, explorer, abas, trilha, numeração de linhas, paginação, barra de status | concluída |
 | 5 | Seções (depoimentos com um mock por enquanto) e composição no `app.tsx` | concluída |
 | 6 | Hero e transição por rolagem (o logo e o arquivo da barra de status voltam ao hero) | concluída |
-| 7 | Paleta de comandos | pendente |
+| 7 | Paleta de comandos | concluída |
 | 8 | Atalhos globais, hash da URL e acabamento (a11y, SEO, Lighthouse) | pendente |
 | 9 | Deploy | a definir |
 

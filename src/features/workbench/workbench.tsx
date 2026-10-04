@@ -46,6 +46,7 @@ export default function Workbench({ files }: WorkbenchProps) {
         explorerOpen={drawer.open}
         onToggleExplorer={drawer.toggle}
         onHome={() => workbench.showStage('hero')}
+        onOpenPalette={workbench.openPalette}
       />
       <div className="relative flex min-h-0 flex-1">
         <WorkbenchExplorer

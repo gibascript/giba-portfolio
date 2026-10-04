@@ -16,8 +16,6 @@ const twMerge = extendTailwindMerge({
         'paragraph',
         'summary',
         'bullet',
-        'empty',
-        'palette',
         'editor',
       ],
       leading: ['code'],
@@ -30,6 +28,8 @@ const twMerge = extendTailwindMerge({
         'sidebar',
         'hero-nudge',
         'hero-dot',
+        'palette',
+        'palette-top',
       ],
       text: [
         'prose',

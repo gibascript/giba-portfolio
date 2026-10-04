@@ -1,4 +1,5 @@
 import { Button } from '@/components/button';
+import { paletteKeyShortcuts, paletteShortcut } from '@/constants/keyboard';
 import { links } from '@/constants/links';
 import { uiText } from '@/constants/ui-text';
 import { projectName } from '@/features/workbench/constants/workbench-text';
@@ -11,11 +12,13 @@ type WorkbenchTitleBarProps = {
   explorerOpen: boolean;
   onToggleExplorer: () => void;
   onHome: () => void;
+  onOpenPalette: () => void;
 };
 
 /**
  * The 38px title bar: explorer toggle (below `md` only), the wordmark, which
- * goes back to the hero, the open file in the middle and the CV download.
+ * goes back to the hero, the open file in the middle, then the command
+ * palette and the CV download.
  */
 export function WorkbenchTitleBar({
   locale,
@@ -24,6 +27,7 @@ export function WorkbenchTitleBar({
   explorerOpen,
   onToggleExplorer,
   onHome,
+  onOpenPalette,
 }: WorkbenchTitleBarProps) {
   const ui = uiText[locale];
 
@@ -51,9 +55,24 @@ export function WorkbenchTitleBar({
       <p className="min-w-0 flex-1 truncate text-center text-md text-muted">
         {fileName} — {projectName}
       </p>
-      <Button as="a" href={links.cv.url} download={links.cv.fileName} size="sm">
-        {ui.downloadCv}
-      </Button>
+      <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-keyshortcuts={paletteKeyShortcuts}
+          onClick={onOpenPalette}
+        >
+          {paletteShortcut} {ui.palette}
+        </Button>
+        <Button
+          as="a"
+          href={links.cv.url}
+          download={links.cv.fileName}
+          size="sm"
+        >
+          {ui.downloadCv}
+        </Button>
+      </div>
     </header>
   );
 }

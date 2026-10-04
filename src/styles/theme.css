@@ -103,6 +103,9 @@
   --spacing-hero-nudge: 2.2vw;
   /* Space before the gold dot of "Alves.", scaled with the name. */
   --spacing-hero-dot: 0.08em;
+  /* Command palette: width, and drop from the top of the viewport. */
+  --spacing-palette: min(600px, 92vw);
+  --spacing-palette-top: 12vh;
 
   /* Responsive card grids: as many columns as fit, each at least this wide. */
   --grid-template-columns-cards: repeat(
@@ -123,8 +126,6 @@
   --container-paragraph: 64ch;
   --container-summary: 68ch;
   --container-bullet: 72ch;
-  --container-empty: 320px;
-  --container-palette: 600px;
   --container-editor: 980px;
 
   /* Below `md` the workbench explorer becomes a drawer. */
